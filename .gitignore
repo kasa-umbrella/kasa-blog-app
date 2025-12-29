@@ -1,0 +1,57 @@
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Python bytecode & caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python runtime & packaging
+.Python
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+pip-log.txt
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+logs/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Type checking / analysis caches
+.mypy_cache/
+.pytype/
+.pyre/
+
+# Environment files (secrets)
+.env
+.env.*
+
+# Docker / Compose local overrides & data
+.docker/
+docker-compose.override.yml
+docker-data/
+compose.env
+
+# IDEs
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
