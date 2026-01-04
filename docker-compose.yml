@@ -1,27 +1,27 @@
 version: "3.8"
 
 services:
-  api:
+  kasa-blog-api:
     build:
       context: .
       dockerfile: Dockerfile
-    image: kasa-blog-app-api:latest
+    image: kasa-blog-api:latest
     ports:
       - "8000:8000"
     volumes:
       - ./app:/app:delegated
     environment:
       PYTHONUNBUFFERED: "1"
-      DB_HOST: db
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: password
-      DB_NAME: blog_db
+      DB_NAME: kasa_blog_db
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
-      - db
+      - mysql
 
-  db:
+  mysql:
     image: mysql:8.0
     ports:
       - "3306:3306"
@@ -32,6 +32,16 @@ services:
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
 
 volumes:
   mysql_data:
