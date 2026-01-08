@@ -14,14 +14,14 @@ def get_articles():
             title="サンプル記事タイトル1",
             main_image_url="https://example.com/image1.jpg",
             body="これはサンプル記事1の本文です。",
-            created_at=datetime.now().isoformat(),
+            created_at=datetime.now(),
         ),
         article(
             article_id="2",
             title="サンプル記事タイトル2",
             main_image_url="https://example.com/image2.jpg",
             body="これはサンプル記事2の本文です。",
-            created_at=datetime.now().isoformat(),
+            created_at=datetime.now(),
         ),
     ]
     return articles
