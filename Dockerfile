@@ -4,6 +4,9 @@ FROM python:3.12-slim
 # set the working dir.
 WORKDIR /app
 
+# MySQLクライアントをインストール（entrypoint.shで使用）
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
+
 # copy requirements first to take advantage of layer caching
 COPY requirements.txt ./
 

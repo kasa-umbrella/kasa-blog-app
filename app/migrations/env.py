@@ -1,10 +1,17 @@
 import os
+import sys
 from logging.config import fileConfig
+from pathlib import Path
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
+# Pythonパスに親ディレクトリを追加して、appモジュールをインポート可能にする
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from app.db import Base
+# モデルをインポートしてBaseのmetadataに登録
+from app.models.article import Article  # noqa: F401
 
 from alembic import context
 
