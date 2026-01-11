@@ -31,9 +31,9 @@ def get_articles():
 def get_article_by_id(article_id: str):
     article_data = article(
         article_id=article_id,
-        title="サンプル記事タイトル",
+        title="APIサーバーから取得した記事タイトル",
         main_image_url="https://example.com/image.jpg",
-        body="これはサンプル記事の本文です。",
+        body="これはAPIサーバーから取得した記事の本文です。",
         created_at=datetime.now().isoformat(),
     )
 

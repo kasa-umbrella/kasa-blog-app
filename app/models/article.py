@@ -5,9 +5,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import declarative_base
-
-
-Base = declarative_base()
+from app.db import Base
 
 
 class Article(Base):
