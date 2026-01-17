@@ -3,8 +3,12 @@ import { ArticleProps } from "./types";
 export async function fetchArticle(articleId: string): Promise<ArticleProps> {
     //データフェッチする実装にする予定
     try{
-        const url = `${process.env.API_BASE_URL}article/${articleId}`;
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const url = `${baseUrl}/article/${articleId}`;
+
+        console.log(url);
         const res: Response = await fetch(url);
+
         
         if (!res.ok) {
             throw new Error(`サーバーとの通信に失敗しました。: ${res.status}`);

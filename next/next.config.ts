@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
   },
   // クライアントでも参照できるようにビルド時に注入
   env: {
-    API_BASE_URL: process.env.API_BASE_URL,
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   },
 };
 

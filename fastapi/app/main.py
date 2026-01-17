@@ -7,4 +7,4 @@ app = FastAPI()
 
 app.include_router(root.router)
 app.include_router(items.router)
-app.include_router(article.router)
+app.include_router(article.router, prefix="/api")

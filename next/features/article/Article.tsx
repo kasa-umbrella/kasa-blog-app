@@ -12,6 +12,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
     try {
         article = await fetchArticle(articleId);
     } catch (error) {
+        console.error("記事コンポーネントでのエラー:", error);
         return (
             <div>記事の取得中にエラーが発生しました。</div>
         );

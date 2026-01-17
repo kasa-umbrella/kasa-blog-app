@@ -73,6 +73,8 @@ services:
     volumes:
       - ./next:/app
       - /app/node_modules
+    env_file:
+      - ./.env
     environment:
       NEXT_TELEMETRY_DISABLED: "1"
     networks:
