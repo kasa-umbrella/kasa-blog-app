@@ -2,6 +2,6 @@ export interface ArticleProps {
     articleId: string | "";
     title: string | "";
     mainImageUrl: string | "";
-    createdAt: string | "";
+    createdAt: Date | string | "";
     body: string | "";
 }
