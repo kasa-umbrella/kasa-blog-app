@@ -1,15 +1,15 @@
 services:
-  # ========== Backend Services ==========
+  # バックエンド（FastAPI + MySQL + phpMyAdmin）
   kasa-blog-api:
     build:
-      context: ./backend
+      context: ./fastapi
       dockerfile: Dockerfile
     image: kasa-blog-api:latest
     container_name: kasa-blog-api
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/app:/app:delegated
+      - ./fastapi/app:/app:delegated
     environment:
       PYTHONUNBUFFERED: "1"
       DATABASE_URL: mysql+pymysql://root:password@mysql:3306/kasa_blog_db
@@ -59,19 +59,19 @@ services:
     networks:
       - kasa-blog-network
 
-  # ========== Frontend Services ==========
+  # フロントエンド（Next.js + nginx）
   # Development: Hot reload enabled (default)
-  frontend-dev:
+  next-dev:
     build:
-      context: ./frontend
+      context: ./next
       dockerfile: Dockerfile.dev
-    container_name: kasa-blog-frontend-dev
+    container_name: kasa-blog-next-dev
     ports:
       - "3000:3000"
     tty: true
     stdin_open: true
     volumes:
-      - ./frontend:/app
+      - ./next:/app
       - /app/node_modules
     environment:
       NEXT_TELEMETRY_DISABLED: "1"
@@ -81,11 +81,11 @@ services:
       - kasa-blog-api
 
   # Production: Multi-stage built image
-  frontend-prod:
+  next-prod:
     build:
-      context: ./frontend
+      context: ./next
       dockerfile: Dockerfile
-    container_name: kasa-blog-frontend-prod
+    container_name: kasa-blog-next-prod
     ports:
       - "3001:3000"
     environment:
@@ -99,11 +99,11 @@ services:
   # Nginx reverse proxy
   nginx:
     build:
-      context: ./frontend
+      context: ./next
       dockerfile: Dockerfile.nginx
     container_name: kasa-blog-nginx
     depends_on:
-      - frontend-prod
+      - next-prod
     ports:
       - "80:80"
     restart: unless-stopped
