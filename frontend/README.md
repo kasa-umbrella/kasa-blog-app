@@ -8,18 +8,6 @@ Next.js 16 をベースにしたブログアプリです。Docker を用いた�
 - Node.js 22 (alpine)
 - Docker / Docker Compose
 
-ディレクトリ例:
-
-```
-app/
-	layout.tsx
-	page.tsx
-public/
-Dockerfile
-Dockerfile.dev
-docker-compose.yml
-```
-
 ## 前提条件
 
 - macOS / Linux / Windows (WSL2)
@@ -29,17 +17,17 @@ docker-compose.yml
 
 ## 開発手順（Docker）
 
-ホットリロードありの開発用コンテナを起動します。
+リポジトリルートの `docker-compose.yml`（モノレポ統合）を使って起動します。
 
 ```bash
-docker compose up app
+docker compose up frontend-dev
 ```
 
 アクセス: http://localhost:3000
 
-- `app` サービスは [Dockerfile.dev](Dockerfile.dev) を使用します。
-- ソースをカレントディレクトリから `/app` にボリュームマウントしています。
-- `next dev -H 0.0.0.0 -p 3000` で外部アクセス可能にしています。
+- `frontend-dev` サービスは [Dockerfile.dev](Dockerfile.dev) を使用します。
+- 依存関係として API / MySQL も自動で立ち上がります（`depends_on`）。
+- ソースを `./frontend` から `/app` にマウントし、`next dev -H 0.0.0.0 -p 3000` でホットリロードします。
 
 停止:
 
@@ -49,18 +37,19 @@ docker compose down
 
 ## 本番手順（Docker）
 
-最適化済みのマルチステージビルドイメージで起動します。
+最適化済みのマルチステージビルドイメージで起動します（ルートの Compose を使用）。
 
 ```bash
-docker compose up --build app-prod
+docker compose --profile prod up --build frontend-prod nginx
 ```
 
-アクセス: http://localhost:3001
+アクセス:
+- フロントエンド: http://localhost
+- API: http://localhost:8000
 
-- `app-prod` サービスは [Dockerfile](Dockerfile) を使用します。
-- ビルド済み `.next` と本番依存関係のみを含む軽量ランナーで `next start` を実行します。
-- 追加のリバースプロキシが不要な場合はこのサービスだけで完結します。
-- 開発とポートが重複しないよう、ホスト側は 3001 を使用しています（コンテナ内は 3000 でリッスン）。
+- `frontend-prod` は [Dockerfile](Dockerfile) を使用します。
+- `nginx` サービス（プロファイル `prod`）が 80 番でリバースプロキシします。
+- 開発とポートが重複しないよう、ホスト側は 3001（コンテナ内 3000）を使用します。
 
 ## npm スクリプト（参考）
 
