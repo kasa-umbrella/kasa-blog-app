@@ -1,23 +1,33 @@
 services:
+  # ========== Backend Services ==========
   kasa-blog-api:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     image: kasa-blog-api:latest
+    container_name: kasa-blog-api
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app:delegated
-      - ./entrypoint.sh:/entrypoint.sh
+      - ./backend/app:/app:delegated
     environment:
       PYTHONUNBUFFERED: "1"
       DATABASE_URL: mysql+pymysql://root:password@mysql:3306/kasa_blog_db
-    command: /entrypoint.sh
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    networks:
+      - kasa-blog-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   mysql:
     image: mysql:8.0
+    container_name: kasa-blog-mysql
     ports:
       - "3306:3306"
     environment:
@@ -27,16 +37,84 @@ services:
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - kasa-blog-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: kasa-blog-phpmyadmin
     ports:
       - "8080:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: password
     depends_on:
       - mysql
+    networks:
+      - kasa-blog-network
+
+  # ========== Frontend Services ==========
+  # Development: Hot reload enabled (default)
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: kasa-blog-frontend-dev
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+    networks:
+      - kasa-blog-network
+    depends_on:
+      - kasa-blog-api
+
+  # Production: Multi-stage built image
+  frontend-prod:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kasa-blog-frontend-prod
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+    networks:
+      - kasa-blog-network
+    profiles:
+      - prod
+
+  # Nginx reverse proxy
+  nginx:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.nginx
+    container_name: kasa-blog-nginx
+    depends_on:
+      - frontend-prod
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - kasa-blog-network
+    profiles:
+      - prod
 
 volumes:
   mysql_data:
+
+networks:
+  kasa-blog-network:
+    driver: bridge

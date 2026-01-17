@@ -1,10 +1,56 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
+
+# Python Virtual Environments
 env/
 venv/
+.venv/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+
+# Environment
 .env
-.DS_Store
+.env.local
+.env.*.local
+
+# IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Git
+.git
+.gitignore
+
+# Dependencies
+.pnpm-store/
+
+# Docker
+.dockerignore
+Dockerfile*
+
+# Repository files not needed in build
+README.md
+LICENSE
+.gitattributes
