@@ -44,7 +44,7 @@ docker compose logs -f kasa-blog-api
 - ルートメッセージ: http://localhost:8000/
 - DB 接続テスト: http://localhost:8000/db-test
 - Next.js（開発）: http://localhost:3000
-- phpMyAdmin: http://localhost:8080（ユーザー: `root` / パスワード: `password`）
+- phpMyAdmin: http://localhost:8080
 
 ### 本番モード（Nginx 経由で公開）
 Next.js 本番と Nginx は `prod` プロファイルで起動します。
