@@ -55,3 +55,16 @@ compose.env
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Frontend (Next.js)
+node_modules/
+.next/
+.turbo/
+.vercel/
+out/
+coverage/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+eslintcache
+*.tsbuildinfo
