@@ -9,7 +9,8 @@ from sqlalchemy import pool
 # Pythonパスに親ディレクトリを追加して、appモジュールをインポート可能にする
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from app.db import Base
+from app.database import Base
+
 # モデルをインポートしてBaseのmetadataに登録
 from app.models.article import Article  # noqa: F401
 
@@ -78,9 +79,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

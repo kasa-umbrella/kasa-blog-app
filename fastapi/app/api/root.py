@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from db import get_db
+from database import get_database
 
 router = APIRouter()
 
@@ -13,6 +13,6 @@ def read_root():
 
 
 @router.get("/db-test")
-def db_test(db: Session = Depends(get_db)):
+def db_test(db: Session = Depends(get_database)):
     db.execute(text("SELECT 1"))
     return {"message": "DB connected"}
