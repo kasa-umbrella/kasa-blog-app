@@ -60,7 +60,6 @@ services:
       - kasa-blog-network
 
   # フロントエンド（Next.js + nginx）
-  # Development: Hot reload enabled (default)
   next-dev:
     build:
       context: ./next
@@ -81,6 +80,8 @@ services:
       - kasa-blog-network
     depends_on:
       - kasa-blog-api
+    profiles:
+      - dev
 
   # Production: Multi-stage built image
   next-prod:
