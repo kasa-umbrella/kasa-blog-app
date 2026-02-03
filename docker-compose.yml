@@ -25,6 +25,38 @@ services:
       retries: 5
       start_period: 10s
 
+  # Production: Multi-stage built image
+  next-prod:
+    build:
+      context: ./next
+      dockerfile: Dockerfile
+    container_name: kasa-blog-next-prod
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+    networks:
+      - kasa-blog-network
+    profiles:
+      - prod
+
+  # Nginx reverse proxy
+  nginx:
+    build:
+      context: ./next
+      dockerfile: Dockerfile.nginx
+    container_name: kasa-blog-nginx
+    depends_on:
+      - next-prod
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - kasa-blog-network
+    profiles:
+      - prod
+
   mysql:
     image: mysql:8.0
     container_name: kasa-blog-mysql
@@ -80,40 +112,6 @@ services:
       - kasa-blog-network
     depends_on:
       - kasa-blog-api
-    profiles:
-      - dev
-
-  # Production: Multi-stage built image
-  next-prod:
-    build:
-      context: ./next
-      dockerfile: Dockerfile
-    container_name: kasa-blog-next-prod
-    ports:
-      - "3001:3000"
-    environment:
-      NODE_ENV: production
-      NEXT_TELEMETRY_DISABLED: "1"
-    networks:
-      - kasa-blog-network
-    profiles:
-      - prod
-
-  # Nginx reverse proxy
-  nginx:
-    build:
-      context: ./next
-      dockerfile: Dockerfile.nginx
-    container_name: kasa-blog-nginx
-    depends_on:
-      - next-prod
-    ports:
-      - "80:80"
-    restart: unless-stopped
-    networks:
-      - kasa-blog-network
-    profiles:
-      - prod
 
 volumes:
   mysql_data:
