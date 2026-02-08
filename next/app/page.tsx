@@ -5,7 +5,8 @@ const ArticlesPage = () => {
     return (
         <>
             <About />
-            <Articles />
+            <Articles header="人気記事" />
+            <Articles header="記事一覧" />
         </>
     );
 };

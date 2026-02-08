@@ -4,13 +4,13 @@ import ArticleRecord from "./components/ArticleRecord";
 import { Box } from "@mui/material";
 import { ArticleRecordProps } from "./types";
 
-const Articles = async () => {
+const Articles = async ({ header }: { header: string }) => {
     const articles: ArticleRecordProps[] = await fetchArticles();
 
     return (
-        <>
+        <Box sx={{ mb: 4 }}>
             <AppHeadTitle>
-                記事一覧
+                {header}
             </AppHeadTitle>
             <Box sx={{
                 display: 'grid',
@@ -21,7 +21,7 @@ const Articles = async () => {
                     <ArticleRecord key={article.articleId} article={article} />
                 ))}
             </Box>
-        </>
+        </Box>
     );
 }
 
