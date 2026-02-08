@@ -85,8 +85,8 @@ docker compose exec kasa-blog-api alembic upgrade head
 ## API 概要
 - `GET /` … ウェルカムメッセージ
 - `GET /db-test` … DB 接続確認（`SELECT 1`）
-- `GET /articles` … サンプル記事のリスト（モック）
-- `GET /article/{article_id}` … サンプル記事の詳細（モック）
+- `GET /api/articles` … サンプル記事のリスト（モック）
+- `GET /api/article/{article_id}` … サンプル記事の詳細（モック）
 
 > エンドポイントの詳細・試験は [http://localhost:8000/docs](http://localhost:8000/docs) を参照。
 
@@ -95,7 +95,7 @@ Next.js のソースは `next/` 配下です。開発サーバはホットリロ
 
 ### Lint（ESLint）
 ```bash
-docker compose exec kasa-blog-next-dev npm run lint
+docker compose exec next-dev npm run lint
 ```
 
 ### 本番ビルド（手動）
@@ -122,7 +122,7 @@ docker compose up -d next-prod
 - **マイグレーションで `DATABASE_URL` 未設定**
   - Compose 経由で起動し、`docker compose exec kasa-blog-api env | grep DATABASE_URL` を確認してください。
 - **Next.js が 3000 で起動しない**
-  - `next-dev` コンテナのログを確認: `docker compose logs -f kasa-blog-next-dev`
+  - `next-dev` コンテナのログを確認: `docker compose logs -f next-dev`
 
 ## メンテナンスコマンド
 ```bash

@@ -4,6 +4,7 @@ export interface ArticleRecordProps {
     title: string;
     createdAt: string;
     summery: string;
+    mainImageUrl: string;
 };
 
 //記事の検索条件の型定義

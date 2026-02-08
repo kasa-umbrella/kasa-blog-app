@@ -1,15 +1,23 @@
 import { ArticleRecordProps } from "./types";
 
 export async function fetchArticles(): Promise<ArticleRecordProps[]> {
-    //データフェッチする実装にする予定
-    const articles: ArticleRecordProps[] = [
-        {
-            articleId: '550e8400-e29b-41d4-a716-446655440000',
-            title: "サンプル記事タイトル1",
-            summery: "これはサンプル記事の要約です。この記事はサンプルデータとして使用されます。",
-            createdAt: "2023-10-01T10:00:00Z",
-        },
-    ];
+    try {
+        // APIのベースURLを環境変数から取得
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const url = `${baseUrl}/articles`;
 
-    return articles;
+        // APIから記事一覧を取得
+        const res: Response = await fetch(url);
+        if (!res.ok) {
+            throw new Error(`サーバーとの通信に失敗しました。: ${res.status}`);
+        }
+
+        // レスポンスをJSONとしてパース
+        const data = await res.json();
+        console.log("APIから取得したJSON:", data);
+        return data as ArticleRecordProps[];
+    } catch (error) {
+        console.error("記事一覧の取得中にエラーが発生しました:", error);
+        throw error;
+    }
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, Stack, Typography, Box } from "@mui/material";
+import Image from "next/image";
 import { ArticleRecordProps } from "../types";
 import { formatDate } from "@/util/functions/format";
-import { Star } from "@mui/icons-material";
 
 const ArticleTitle = ({ title }: { title: string }) => (
     <Typography fontSize={15} fontWeight="bold">
@@ -36,12 +36,14 @@ const ArticleRecord = ({ article }: { article: ArticleRecordProps }) => {
     return (
         <Card sx={{ height: 300, position: 'relative' }}>
             <CardActionArea onClick={handleClick}>
-                <CardMedia
-                    height="140"
-                    image="/sample.jpg"
-                    component="img"
-                    alt="Sample image"
-                />
+                <Box sx={{ position: 'relative', width: '100%', height: 160 }}>
+                    <Image
+                        src={article.mainImageUrl}
+                        alt={article.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                    />
+                </Box>
                 <CardContent
                     sx={{ height: 160, overflow: 'hidden' }}
                 >
@@ -52,12 +54,6 @@ const ArticleRecord = ({ article }: { article: ArticleRecordProps }) => {
                     </Stack>
                 </CardContent>
             </CardActionArea>
-            <Star sx={{
-                position: 'absolute',
-                bottom: 10,
-                right: 10,
-                color: 'grey.400'
-            }} />
         </Card>
     );
 };

@@ -76,21 +76,6 @@ services:
       timeout: 20s
       retries: 10
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: kasa-blog-phpmyadmin
-    ports:
-      - "8080:80"
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: password
-    depends_on:
-      - mysql
-    networks:
-      - kasa-blog-network
-
   # フロントエンド（Next.js + nginx）
   next-dev:
     build:

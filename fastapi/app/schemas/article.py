@@ -10,6 +10,7 @@ class article(BaseModel):
     
     article_id: str = Field(..., alias="articleId")
     title: str
+    summery: str
     main_image_url: str | None = Field(None, alias="mainImageUrl")
     body: str
     created_at: datetime = Field(..., alias="createdAt")
