@@ -25,8 +25,7 @@ const LoginForm = () => {
                 throw new Error("認証に失敗しました。再度お試しください。");
             }
         } catch (error) {
-            const message = error instanceof Error ? error.message : "ログインに失敗しました。";
-            setErrorMessage(message);
+            setErrorMessage("ログインに失敗しました。");
         } finally {
             setIsLoading(false);
         }
