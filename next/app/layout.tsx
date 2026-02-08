@@ -22,17 +22,22 @@ const RootLayout = ({ children, }: Readonly<{ children: React.ReactNode; }>) => 
         <html lang="ja">
             <AppRouterCacheProvider>
                 <AppTheme>
-                    <body className={`${notoSansJP.variable}`} style={{ margin: 0, padding: 0 }}>
+                    <body
+                        className={`${notoSansJP.variable}`}
+                        style={{ margin: 0, padding: 0, minHeight: "100vh", width: "100%", display: "flex", flexDirection: "column", }}
+                    >
                         <AppHeader />
                         <Box
                             component="main"
                             sx={{
+                                width: "100%",
                                 maxWidth: 900,
                                 minWidth: 250,
                                 mt: 3,
-                                mb: 15,
+                                mb: 20,  
                                 mx: "auto",
                                 px: 2,
+                                flexGrow: 1,
                             }}
                         >
                             {children}

@@ -14,7 +14,6 @@ export async function fetchArticles(): Promise<ArticleRecordProps[]> {
 
         // レスポンスをJSONとしてパース
         const data = await res.json();
-        console.log("APIから取得したJSON:", data);
         return data as ArticleRecordProps[];
     } catch (error) {
         console.error("記事一覧の取得中にエラーが発生しました:", error);

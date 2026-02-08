@@ -1,6 +1,8 @@
+import LoginForm from "@/features/login/LoginForm";
+
 const LoginPage = () => {
     return (
-        <>ログインページ</>
+        <LoginForm />
     );
 };
 

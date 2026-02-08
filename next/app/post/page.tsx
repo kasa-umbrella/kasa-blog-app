@@ -1,6 +1,10 @@
+import PostForm from "@/features/post/PostForm";
+
 const PostPage = () => {
     return (
-        <>投稿ページ</>
+        <>
+            <PostForm />
+        </>
     );
 };
 
