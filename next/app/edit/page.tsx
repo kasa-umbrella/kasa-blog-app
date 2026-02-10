@@ -1,6 +1,8 @@
+import EditForm from "@/features/edit/EditForm";
+
 const EditPage = () => {
     return (
-        <>記事編集ページ</>
+        <EditForm />
     );
 };
 

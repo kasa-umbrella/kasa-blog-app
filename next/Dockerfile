@@ -12,6 +12,8 @@ RUN npm ci
 
 # ビルド: dev 依存を使ってビルド後、不要な dev 依存を削除
 FROM deps AS builder
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 COPY . .
 RUN npm run build \
 	&& npm prune --omit=dev
