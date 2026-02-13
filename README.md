@@ -6,12 +6,10 @@
 - **バックエンド**: FastAPI（Uvicorn）
   - ポート: 8000（ホスト）
   - ヘルスチェック: `/docs`
-  - DB接続: `DATABASE_URL`（compose から注入）
+  - DB接続: `DATABASE_URL`（.env から読み込み）
 - **DB**: MySQL 8.0
   - ポート: 3306（ホスト）
   - ボリューム: `mysql_data`
-- **DB管理**: phpMyAdmin
-  - ポート: 8080（ホスト）
 - **フロント（開発）**: Next.js 開発サーバ（ホットリロード）
   - ポート: 3000（ホスト）
 - **フロント（本番）**: Next.js 本番ビルド
@@ -19,7 +17,7 @@
 - **リバースプロキシ**: Nginx（Next.js 本番を 80/tcp で公開）
   - ポート: 80（ホスト）
 
-詳細は [docker-compose.yml](docker-compose.yml) を参照してください。
+詳細は [docker-compose.yml](docker-compose.yml)、[docker-compose.dev.yml](docker-compose.dev.yml)、[docker-compose.prod.yml](docker-compose.prod.yml) を参照してください。
 
 ## 前提条件
 - Docker Desktop（Compose 対応）
@@ -28,58 +26,83 @@
 > Node や Python をローカルに直接インストールする必要はありません（Docker 利用前提）。
 
 ## クイックスタート
-### 開発モード（ホットリロード）
-1. すべての主要サービスを起動（API / MySQL / phpMyAdmin / Next.js 開発）
+
+### 初回セットアップ
+1. 環境変数ファイルを作成
 
 ```bash
-# 初回・通常起動
-docker compose up -d kasa-blog-api mysql phpmyadmin next-dev
+# .env.example をコピーして .env を作成
+cp .env.example .env
 
-# ログを見る（任意）
-docker compose logs -f kasa-blog-api
+# 必要に応じて .env を編集（パスワードやポート設定など）
 ```
 
-2. 確認
+### 開発モード（ホットリロード）
+開発環境では、ソースコードの変更が自動的にコンテナに反映されます。
+
+```bash
+# 開発環境を起動
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# ログを見る（任意）
+docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
+
+# 停止
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+```
+
+起動後、以下のURLでアクセス可能：
 - API ドキュメント: http://localhost:8000/docs
 - ルートメッセージ: http://localhost:8000/
 - DB 接続テスト: http://localhost:8000/db-test
 - Next.js（開発）: http://localhost:3000
-- phpMyAdmin: http://localhost:8080
 
 ### 本番モード（Nginx 経由で公開）
-Next.js 本番と Nginx は `prod` プロファイルで起動します。
+本番環境では、最適化されたビルドと Nginx リバースプロキシが使用されます。
 
 ```bash
-# 本番用フロント＆Nginx を含めて起動
-docker compose --profile prod up -d kasa-blog-api mysql next-prod nginx
+# 本番環境を起動
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 # 80/tcp で公開
 open http://localhost/
+
+# 停止
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 ```
 
-> 本番プロファイルでも API・MySQL は通常どおり起動します。
-
 ## 環境変数
-- `DATABASE_URL`: FastAPI 用の DB 接続文字列（Compose から注入）。
+すべての設定は `.env` ファイルで管理されています。
+
+### 主要な環境変数
+- `MYSQL_ROOT_PASSWORD`: MySQL のルートパスワード
+- `MYSQL_DATABASE`: データベース名
+- `DATABASE_URL`: FastAPI 用の DB 接続文字列
   - 例: `mysql+pymysql://root:password@mysql:3306/kasa_blog_db`
-- FastAPI は `.env` も読み込みます（ローカル起動する場合に利用可能）。Compose 利用時は未設定でも問題ありません。
+- `NEXT_PUBLIC_API_BASE_URL`: Next.js から API にアクセスするための URL
+- ポート設定: `FASTAPI_PORT`, `MYSQL_PORT`, `NEXT_DEV_PORT`, `NEXT_PROD_PORT`, `NGINX_PORT`
+
+詳細は [.env.example](.env.example) を参照してください。
 
 ## データベースとマイグレーション（Alembic）
 スキーマは Alembic で管理しています。初期テーブルは `articles` が含まれます。
 
 ### マイグレーション適用
 ```bash
-# コンテナ内で最新に適用
-docker compose exec kasa-blog-api alembic upgrade head
+# 開発環境の場合
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic upgrade head
+
+# 本番環境の場合
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec kasa-blog-api alembic upgrade head
 ```
 
 ### 変更の自動生成
 ```bash
-# モデル変更から差分を生成
-docker compose exec kasa-blog-api alembic revision --autogenerate -m "update schema"
+# モデル変更から差分を生成（開発環境）
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic revision --autogenerate -m "update schema"
 
 # 生成後に適用
-docker compose exec kasa-blog-api alembic upgrade head
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic upgrade head
 ```
 
 ## API 概要
@@ -95,14 +118,14 @@ Next.js のソースは `next/` 配下です。開発サーバはホットリロ
 
 ### Lint（ESLint）
 ```bash
-docker compose exec next-dev npm run lint
+# 開発環境で実行
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec next-dev npm run lint
 ```
 
-### 本番ビルド（手動）
+### 本番ビルドの確認
 ```bash
-# プロファイルを使わず個別に
-docker compose build next-prod
-docker compose up -d next-prod
+# 本番環境を起動して確認
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
 ## ディレクトリ構成（抜粋）
@@ -118,22 +141,33 @@ docker compose up -d next-prod
 
 ## よくあるトラブル
 - **FastAPI が DB に接続できない**
-  - `mysql` のヘルスチェック完了後に `kasa-blog-api` が起動します。再起動: `docker compose restart kasa-blog-api`
+  - `mysql` のヘルスチェック完了後に `kasa-blog-api` が起動します。
+  - 再起動: `docker compose -f docker-compose.yml -f docker-compose.dev.yml restart kasa-blog-api`
 - **マイグレーションで `DATABASE_URL` 未設定**
-  - Compose 経由で起動し、`docker compose exec kasa-blog-api env | grep DATABASE_URL` を確認してください。
-- **Next.js が 3000 で起動しない**
-  - `next-dev` コンテナのログを確認: `docker compose logs -f next-dev`
+  - `.env` ファイルが正しく設定されているか確認してください。
+  - 環境変数の確認: `docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api env | grep DATABASE_URL`
+- **Next.js が起動しない**
+  - コンテナのログを確認: `docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f next-dev`
+- **.env ファイルが見つからない**
+  - `.env.example` をコピーして `.env` を作成してください: `cp .env.example .env`
 
 ## メンテナンスコマンド
 ```bash
-# 停止
-docker compose down
+# 開発環境の停止
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-# 再起動（一部サービス）
-docker compose restart kasa-blog-api next-dev
+# 本番環境の停止
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+
+# 再起動（開発環境）
+docker compose -f docker-compose.yml -f docker-compose.dev.yml restart kasa-blog-api next-dev
 
 # ボリュームを含めて完全停止（DB初期化に注意）
-docker compose down -v
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+
+# イメージの再ビルド（コードを大幅に変更した場合）
+docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 ```
 
 ---

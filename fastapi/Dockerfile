@@ -1,23 +1,37 @@
-# set up the container.
+# ========================================
+# FastAPI アプリケーション用 Dockerfile
+# ========================================
 FROM python:3.12-slim
 
-# set the working dir.
+# 作業ディレクトリを設定
 WORKDIR /app
 
-# MySQLクライアントをインストール（entrypoint.shで使用）
-RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
+# 必要なシステムパッケージをインストール
+# - default-mysql-client: MySQLクライアント（マイグレーション等で使用）
+# - curl: ヘルスチェック用
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    default-mysql-client \
+    curl && \
+    rm -rf /var/lib/apt/lists/*
 
-# copy requirements first to take advantage of layer caching
+# 依存関係ファイルを先にコピー（レイヤーキャッシュの活用）
 COPY requirements.txt ./
 
-# install libraries from requirements
-RUN pip install --no-cache-dir -r requirements.txt
+# Pythonパッケージをインストール
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# copy the app dir.
+# アプリケーションコードをコピー
 COPY app app
 
-# expose the port.
+# 非rootユーザーを作成して切り替え
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# ポートを公開
 EXPOSE 8000
 
-# command to run the app using uvicorn.
-CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]
+# アプリケーションを起動
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

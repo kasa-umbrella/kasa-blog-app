@@ -1,75 +1,21 @@
+# ========================================
+# Kasa Blog App - ベース設定
+# 開発環境: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# 本番環境: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+# ========================================
+
 services:
-  # バックエンド（FastAPI + MySQL + phpMyAdmin）
-  kasa-blog-api:
-    build:
-      context: ./fastapi
-      dockerfile: Dockerfile
-    image: kasa-blog-api:latest
-    container_name: kasa-blog-api
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./fastapi/app:/app:delegated
-    environment:
-      PYTHONUNBUFFERED: "1"
-      DATABASE_URL: mysql+pymysql://root:password@mysql:3306/kasa_blog_db
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - kasa-blog-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-
-  # Production: Multi-stage built image
-  next-prod:
-    build:
-      context: ./next
-      dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-    container_name: kasa-blog-next-prod
-    ports:
-      - "3001:3000"
-    env_file:
-      - ./.env
-    environment:
-      NODE_ENV: production
-      NEXT_TELEMETRY_DISABLED: "1"
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-    networks:
-      - kasa-blog-network
-    profiles:
-      - prod
-
-  # Nginx reverse proxy
-  nginx:
-    build:
-      context: ./next
-      dockerfile: Dockerfile.nginx
-    container_name: kasa-blog-nginx
-    depends_on:
-      - next-prod
-    ports:
-      - "80:80"
-    restart: unless-stopped
-    networks:
-      - kasa-blog-network
-    profiles:
-      - prod
-
+  # ========================================
+  # MySQL データベース
+  # ========================================
   mysql:
     image: mysql:8.0
     container_name: kasa-blog-mysql
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: kasa_blog_db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-kasa_blog_db}
       MYSQL_CHARACTER_SET_SERVER: utf8mb4
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
     volumes:
@@ -77,35 +23,23 @@ services:
     networks:
       - kasa-blog-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-password}"]
+      interval: 10s
+      timeout: 5s
       retries: 10
+      start_period: 30s
+    restart: unless-stopped
 
-  # フロントエンド（Next.js + nginx）
-  next-dev:
-    build:
-      context: ./next
-      dockerfile: Dockerfile.dev
-    container_name: kasa-blog-next-dev
-    ports:
-      - "3000:3000"
-    tty: true
-    stdin_open: true
-    volumes:
-      - ./next:/app
-      - /app/node_modules
-    env_file:
-      - ./.env
-    environment:
-      NEXT_TELEMETRY_DISABLED: "1"
-    networks:
-      - kasa-blog-network
-    depends_on:
-      - kasa-blog-api
-
+# ========================================
+# ボリューム定義
+# ========================================
 volumes:
   mysql_data:
+    driver: local
 
+# ========================================
+# ネットワーク定義
+# ========================================
 networks:
   kasa-blog-network:
     driver: bridge

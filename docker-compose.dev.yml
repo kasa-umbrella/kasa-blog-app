@@ -1,0 +1,70 @@
+# ========================================
+# Kasa Blog App - 開発環境設定
+# 起動コマンド: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ========================================
+
+services:
+  # ========================================
+  # バックエンド（FastAPI）- 開発環境
+  # ========================================
+  kasa-blog-api:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    image: kasa-blog-api:dev
+    container_name: kasa-blog-api-dev
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    volumes:
+      # ホットリロード用にソースコードをマウント
+      - ./fastapi/app:/app:delegated
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: ${DATABASE_URL}
+    # ホットリロード有効化
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - kasa-blog-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # ========================================
+  # フロントエンド（Next.js）- 開発環境
+  # ========================================
+  next-dev:
+    build:
+      context: ./next
+      dockerfile: Dockerfile.dev
+    image: kasa-blog-next:dev
+    container_name: kasa-blog-next-dev
+    ports:
+      - "${NEXT_DEV_PORT:-3000}:3000"
+    volumes:
+      # ホットリロード用にソースコードをマウント
+      - ./next:/app
+      # node_modulesは除外（コンテナ内のものを使用）
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    tty: true
+    stdin_open: true
+    networks:
+      - kasa-blog-network
+    depends_on:
+      - kasa-blog-api
+    restart: unless-stopped
