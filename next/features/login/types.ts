@@ -6,8 +6,5 @@ export interface LoginFormData {
 
 /** ログイン API のレスポンス型。 */
 export interface LoginResponse {
-	token?: string;
-	accessToken?: string;
-	refreshToken?: string;
-	[key: string]: unknown;
+	message?: string;
 }
