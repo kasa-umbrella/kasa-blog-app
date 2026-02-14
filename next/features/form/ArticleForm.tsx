@@ -9,8 +9,10 @@ import SummaryInput from "./components/SummeryInput";
 import PublishRange from "./components/PublishRange";
 import ImageUploadInput from "./components/ImageUploadInput";
 import { ArticleFormProps } from "./types";
+import { postArticle, editArticle } from "../post/postService";
 
 const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: ArticleFormProps }) => {
+    const isEditMode = !!articleProps;
     const [article, setArticle] = useState<ArticleFormProps>({
         articleId: articleProps?.articleId ?? "",
         title: articleProps?.title ?? "",
@@ -19,6 +21,22 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         mainText: articleProps?.mainText ?? "",
         mainImage: articleProps?.mainImage ?? null,
     });
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        try {
+            if (isEditMode) {
+                await editArticle(article);
+            } else {
+                await postArticle(article);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Box>
@@ -50,7 +68,9 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                     value={article.mainText}
                     onChange={(e) => setArticle((prev) => ({ ...prev, mainText: e.target.value }))}
                 />
-                <Button variant="contained">投稿</Button>
+                <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+                    {loading ? "送信中..." : isEditMode ? "更新" : "投稿"}
+                </Button>
             </Stack>
         </Box>
     );
