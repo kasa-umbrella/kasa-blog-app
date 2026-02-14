@@ -1,3 +1,8 @@
+/**
+ * 日付を"YYYY-MM-DD"形式にフォーマットする関数
+ * @param date - フォーマットする日付（文字列またはDateオブジェクト）
+ * @returns フォーマットされた日付文字列、またはエラーメッセージ
+ */
 export function formatDate(date: string | Date): string {
     const d: Date = typeof date === 'string' ? new Date(date) : date;
 
