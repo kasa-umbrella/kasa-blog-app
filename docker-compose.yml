@@ -34,6 +34,7 @@ services:
   # バックエンド（FastAPI）- 開発環境
   # ========================================
   kasa-blog-api:
+    profiles: [dev]
     build:
       context: ./fastapi
       dockerfile: Dockerfile
@@ -68,6 +69,7 @@ services:
   # フロントエンド（Next.js）- 開発環境
   # ========================================
   next-dev:
+    profiles: [dev]
     build:
       context: ./next
       dockerfile: Dockerfile.dev

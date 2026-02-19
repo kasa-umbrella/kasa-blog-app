@@ -42,13 +42,13 @@ cp .env.example .env
 
 ```bash
 # 開発環境を起動
-docker compose up --build -d
+docker compose --profile dev up --build -d
 
 # ログを見る（任意）
 docker compose logs -f
 
 # 停止
-docker compose down
+docker compose --profile dev down
 ```
 
 起動後、以下のURLでアクセス可能：
@@ -121,7 +121,7 @@ Next.js のソースは `next/` 配下です。開発サーバはホットリロ
 ### Lint（ESLint）
 ```bash
 # 開発環境で実行
-docker compose exec next-dev npm run lint
+docker compose --profile dev exec next-dev npm run lint
 ```
 
 ### 本番ビルドの確認
@@ -162,12 +162,12 @@ docker compose down
 docker compose --profile prod down
 
 # 再起動（開発環境）
-docker compose restart kasa-blog-api next-dev
+docker compose --profile dev restart kasa-blog-api next-dev
 
 # ボリュームを含めて完全停止（DB初期化に注意）
-docker compose down -v
+docker compose --profile dev down -v
 
 # イメージの再ビルド（コードを大幅に変更した場合）
-docker compose build --no-cache
-docker compose up --build -d
+docker compose --profile dev build --no-cache
+docker compose --profile dev up --build -d
 ```
