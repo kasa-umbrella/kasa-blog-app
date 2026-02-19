@@ -1,7 +1,7 @@
 # ========================================
-# Kasa Blog App - ベース設定
-# 開発環境: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
-# 本番環境: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+# Kasa Blog App - Docker Compose
+# 開発環境: docker compose up --build
+# 本番環境: docker compose --profile prod up --build
 # ========================================
 
 services:
@@ -28,6 +28,147 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+    restart: unless-stopped
+
+  # ========================================
+  # バックエンド（FastAPI）- 開発環境
+  # ========================================
+  kasa-blog-api:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    image: kasa-blog-api:dev
+    container_name: kasa-blog-api-dev
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    volumes:
+      # ホットリロード用にソースコードをマウント
+      - ./fastapi/app:/app:delegated
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: ${DATABASE_URL}
+    # ホットリロード有効化
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - kasa-blog-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # ========================================
+  # フロントエンド（Next.js）- 開発環境
+  # ========================================
+  next-dev:
+    build:
+      context: ./next
+      dockerfile: Dockerfile.dev
+    image: kasa-blog-next:dev
+    container_name: kasa-blog-next-dev
+    ports:
+      - "${NEXT_DEV_PORT:-3000}:3000"
+    volumes:
+      # ホットリロード用にソースコードをマウント
+      - ./next:/app
+      # node_modulesは除外（コンテナ内のものを使用）
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    tty: true
+    stdin_open: true
+    networks:
+      - kasa-blog-network
+    depends_on:
+      - kasa-blog-api
+    restart: unless-stopped
+
+  # ========================================
+  # バックエンド（FastAPI）- 本番環境
+  # ========================================
+  kasa-blog-api-prod:
+    profiles: [prod]
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    image: kasa-blog-api:prod
+    container_name: kasa-blog-api-prod
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: ${DATABASE_URL}
+    # 本番環境ではリロードなし
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - kasa-blog-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # ========================================
+  # フロントエンド（Next.js）- 本番環境
+  # ========================================
+  next-prod:
+    profiles: [prod]
+    build:
+      context: ./next
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    image: kasa-blog-next:prod
+    container_name: kasa-blog-next-prod
+    ports:
+      - "${NEXT_PROD_PORT:-3001}:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    networks:
+      - kasa-blog-network
+    depends_on:
+      - kasa-blog-api-prod
+    restart: unless-stopped
+
+  # ========================================
+  # Nginx リバースプロキシ - 本番環境
+  # ========================================
+  nginx:
+    profiles: [prod]
+    build:
+      context: ./next
+      dockerfile: Dockerfile.nginx
+    image: kasa-blog-nginx:prod
+    container_name: kasa-blog-nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    depends_on:
+      - next-prod
+    networks:
+      - kasa-blog-network
     restart: unless-stopped
 
 # ========================================
