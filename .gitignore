@@ -43,6 +43,7 @@ htmlcov/
 # Environment files (secrets)
 .env
 .env.*
+!.env.example
 
 # Docker / Compose local overrides & data
 .docker/
