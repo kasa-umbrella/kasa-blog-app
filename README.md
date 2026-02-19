@@ -1,6 +1,6 @@
 # Kasa Blog App
 
-フロントエンド（Next.js 16）とバックエンド（FastAPI）＋ MySQL を Docker Compose で構築したブログアプリです。開発用のホットリロード環境と、本番用の Nginx リバースプロキシ構成を含みます。
+フロントエンド（Next.js）とバックエンド（FastAPI）＋ MySQL を Docker Compose で構築したブログアプリです。開発用のホットリロード環境と、本番用の Nginx リバースプロキシ構成を含みます。
 
 ## 構成
 - **バックエンド**: FastAPI（Uvicorn）
@@ -90,26 +90,28 @@ docker compose --profile prod down
 ### マイグレーション適用
 ```bash
 # 開発環境の場合
-docker compose exec kasa-blog-api alembic upgrade head
+docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
 
 # 本番環境の場合
-docker compose --profile prod exec kasa-blog-api-prod alembic upgrade head
+docker compose --profile prod exec kasa-blog-api-prod alembic -c app/alembic.ini upgrade head
 ```
 
 ### 変更の自動生成
 ```bash
 # モデル変更から差分を生成（開発環境）
-docker compose exec kasa-blog-api alembic revision --autogenerate -m "update schema"
+docker compose exec kasa-blog-api alembic -c app/alembic.ini revision --autogenerate -m "update schema"
 
 # 生成後に適用
-docker compose exec kasa-blog-api alembic upgrade head
+docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
 ```
 
 ## API 概要
 - `GET /` … ウェルカムメッセージ
 - `GET /db-test` … DB 接続確認（`SELECT 1`）
-- `GET /api/articles` … サンプル記事のリスト（モック）
-- `GET /api/article/{article_id}` … サンプル記事の詳細（モック）
+- `GET /api/articles` … 記事一覧
+- `GET /api/article/{article_id}` … 記事詳細
+- `POST /api/login` … ログイン
+- `GET /api/auth` … 認証確認
 
 > エンドポイントの詳細・試験は [http://localhost:8000/docs](http://localhost:8000/docs) を参照。
 
@@ -169,6 +171,3 @@ docker compose down -v
 docker compose build --no-cache
 docker compose up --build -d
 ```
-
----
-何か追加したい項目（CI、テスト、公開手順など）があればお知らせください。
