@@ -1,6 +1,6 @@
 # Kasa Blog App
 
-フロントエンド（Next.js 16）とバックエンド（FastAPI）＋ MySQL を Docker Compose で構築したブログアプリです。開発用のホットリロード環境と、本番用の Nginx リバースプロキシ構成を含みます。
+フロントエンド（Next.js）とバックエンド（FastAPI）＋ MySQL を Docker Compose で構築したブログアプリです。開発用のホットリロード環境と、本番用の Nginx リバースプロキシ構成を含みます。
 
 ## 構成
 - **バックエンド**: FastAPI（Uvicorn）
@@ -17,7 +17,7 @@
 - **リバースプロキシ**: Nginx（Next.js 本番を 80/tcp で公開）
   - ポート: 80（ホスト）
 
-詳細は [docker-compose.yml](docker-compose.yml)、[docker-compose.dev.yml](docker-compose.dev.yml)、[docker-compose.prod.yml](docker-compose.prod.yml) を参照してください。
+詳細は [docker-compose.yml](docker-compose.yml) を参照してください。
 
 ## 前提条件
 - Docker Desktop（Compose 対応）
@@ -42,13 +42,13 @@ cp .env.example .env
 
 ```bash
 # 開発環境を起動
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+docker compose up --build -d
 
 # ログを見る（任意）
-docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
+docker compose logs -f
 
 # 停止
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+docker compose down
 ```
 
 起動後、以下のURLでアクセス可能：
@@ -62,13 +62,13 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
 ```bash
 # 本番環境を起動
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker compose --profile prod up --build -d
 
 # 80/tcp で公開
 open http://localhost/
 
 # 停止
-docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker compose --profile prod down
 ```
 
 ## 環境変数
@@ -90,26 +90,28 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 ### マイグレーション適用
 ```bash
 # 開発環境の場合
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic upgrade head
+docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
 
 # 本番環境の場合
-docker compose -f docker-compose.yml -f docker-compose.prod.yml exec kasa-blog-api alembic upgrade head
+docker compose --profile prod exec kasa-blog-api-prod alembic -c app/alembic.ini upgrade head
 ```
 
 ### 変更の自動生成
 ```bash
 # モデル変更から差分を生成（開発環境）
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic revision --autogenerate -m "update schema"
+docker compose exec kasa-blog-api alembic -c app/alembic.ini revision --autogenerate -m "update schema"
 
 # 生成後に適用
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api alembic upgrade head
+docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
 ```
 
 ## API 概要
 - `GET /` … ウェルカムメッセージ
 - `GET /db-test` … DB 接続確認（`SELECT 1`）
-- `GET /api/articles` … サンプル記事のリスト（モック）
-- `GET /api/article/{article_id}` … サンプル記事の詳細（モック）
+- `GET /api/articles` … 記事一覧
+- `GET /api/article/{article_id}` … 記事詳細
+- `POST /api/login` … ログイン
+- `GET /api/auth` … 認証確認
 
 > エンドポイントの詳細・試験は [http://localhost:8000/docs](http://localhost:8000/docs) を参照。
 
@@ -119,13 +121,13 @@ Next.js のソースは `next/` 配下です。開発サーバはホットリロ
 ### Lint（ESLint）
 ```bash
 # 開発環境で実行
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec next-dev npm run lint
+docker compose exec next-dev npm run lint
 ```
 
 ### 本番ビルドの確認
 ```bash
 # 本番環境を起動して確認
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker compose --profile prod up --build -d
 ```
 
 ## ディレクトリ構成（抜粋）
@@ -142,33 +144,30 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ## よくあるトラブル
 - **FastAPI が DB に接続できない**
   - `mysql` のヘルスチェック完了後に `kasa-blog-api` が起動します。
-  - 再起動: `docker compose -f docker-compose.yml -f docker-compose.dev.yml restart kasa-blog-api`
+  - 再起動: `docker compose restart kasa-blog-api`
 - **マイグレーションで `DATABASE_URL` 未設定**
   - `.env` ファイルが正しく設定されているか確認してください。
-  - 環境変数の確認: `docker compose -f docker-compose.yml -f docker-compose.dev.yml exec kasa-blog-api env | grep DATABASE_URL`
+  - 環境変数の確認: `docker compose exec kasa-blog-api env | grep DATABASE_URL`
 - **Next.js が起動しない**
-  - コンテナのログを確認: `docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f next-dev`
+  - コンテナのログを確認: `docker compose logs -f next-dev`
 - **.env ファイルが見つからない**
   - `.env.example` をコピーして `.env` を作成してください: `cp .env.example .env`
 
 ## メンテナンスコマンド
 ```bash
 # 開発環境の停止
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down
+docker compose down
 
 # 本番環境の停止
-docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker compose --profile prod down
 
 # 再起動（開発環境）
-docker compose -f docker-compose.yml -f docker-compose.dev.yml restart kasa-blog-api next-dev
+docker compose restart kasa-blog-api next-dev
 
 # ボリュームを含めて完全停止（DB初期化に注意）
-docker compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+docker compose down -v
 
 # イメージの再ビルド（コードを大幅に変更した場合）
-docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+docker compose build --no-cache
+docker compose up --build -d
 ```
-
----
-何か追加したい項目（CI、テスト、公開手順など）があればお知らせください。

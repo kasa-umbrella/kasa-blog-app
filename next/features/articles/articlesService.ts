@@ -1,5 +1,13 @@
 import { ArticleRecordProps } from "./types";
 
+/**
+ * 記事一覧を API から取得します。
+ *
+ * サーバーはエンドポイント `GET ${NEXT_PUBLIC_API_BASE_URL}/articles` を期待します。
+ *
+ * @returns {Promise<ArticleRecordProps[]>} 記事レコードの配列。
+ * @throws {Error} サーバーがエラー応答を返した場合にステータスコードを含むエラーを投げます。
+ */
 export async function fetchArticles(): Promise<ArticleRecordProps[]> {
     try {
         // APIのベースURLを環境変数から取得

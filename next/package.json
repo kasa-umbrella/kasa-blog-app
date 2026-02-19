@@ -18,7 +18,7 @@
     "dotenv": "^16.4.5",
     "github-markdown-css": "^5.8.1",
     "install": "^0.13.0",
-    "next": "16.1.0",
+    "next": "^16.1.6",
     "npm": "^11.7.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
