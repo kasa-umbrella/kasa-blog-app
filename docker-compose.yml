@@ -138,6 +138,7 @@ services:
     build:
       context: ./next
       dockerfile: Dockerfile
+      network: host
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
     image: kasa-blog-next:prod
