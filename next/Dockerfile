@@ -15,7 +15,7 @@ FROM deps AS builder
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 COPY . .
-RUN NODE_OPTIONS=--max-old-space-size=512 npm run build \
+RUN NODE_OPTIONS=--max-old-space-size=1080 npm run build \
 	&& npm prune --omit=dev
 
 # 実行（本番）
