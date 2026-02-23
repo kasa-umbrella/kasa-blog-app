@@ -106,7 +106,7 @@ services:
     build:
       context: ./fastapi
       dockerfile: Dockerfile
-    image: kasa-blog-api:prod
+    image: ${DOCKER_HUB_USERNAME}/kasa-blog-api:prod
     container_name: kasa-blog-api-prod
     ports:
       - "${FASTAPI_PORT:-8000}:8000"
@@ -141,7 +141,7 @@ services:
       network: host
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
-    image: kasa-blog-next:prod
+    image: ${DOCKER_HUB_USERNAME}/kasa-blog-next:prod
     container_name: kasa-blog-next-prod
     ports:
       - "${NEXT_PROD_PORT:-3001}:3000"
@@ -165,7 +165,7 @@ services:
     build:
       context: ./next
       dockerfile: Dockerfile.nginx
-    image: kasa-blog-nginx:prod
+    image: ${DOCKER_HUB_USERNAME}/kasa-blog-nginx:prod
     container_name: kasa-blog-nginx
     ports:
       - "${NGINX_PORT:-80}:80"
