@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # アプリケーションコードをコピー
-COPY app app
+COPY app/ .
 
 # 非rootユーザーを作成して切り替え
 RUN useradd -m -u 1000 appuser && \
