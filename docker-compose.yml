@@ -9,6 +9,7 @@ services:
   # MySQL データベース
   # ========================================
   mysql:
+    platform: linux/amd64
     image: mysql:8.0
     container_name: kasa-blog-mysql
     ports:
@@ -103,6 +104,7 @@ services:
   # ========================================
   kasa-blog-api-prod:
     profiles: [prod]
+    platform: linux/amd64
     build:
       context: ./fastapi
       dockerfile: Dockerfile
@@ -135,6 +137,7 @@ services:
   # ========================================
   next-prod:
     profiles: [prod]
+    platform: linux/amd64
     build:
       context: ./next
       dockerfile: Dockerfile
@@ -162,6 +165,7 @@ services:
   # ========================================
   nginx:
     profiles: [prod]
+    platform: linux/amd64
     build:
       context: ./next
       dockerfile: Dockerfile.nginx
