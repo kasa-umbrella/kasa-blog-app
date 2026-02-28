@@ -14,3 +14,5 @@ class article(BaseModel):
     main_image_url: str | None = Field(None, alias="mainImageUrl")
     body: str
     created_at: datetime = Field(..., alias="createdAt")
+
+    model_config = {"populate_by_name": True}

@@ -6,3 +6,5 @@ cryptography
 python-dotenv
 pydantic
 alembic
+passlib[bcrypt]
+python-jose[cryptography]

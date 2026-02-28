@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime, Integer, String, Text
-from app.database import Base
+from database import Base
 
 
 class Article(Base):
