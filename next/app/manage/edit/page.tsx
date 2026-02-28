@@ -1,4 +1,4 @@
-import EditForm from "@/features/edit/EditForm";
+import EditForm from "@/features/manage/edit/EditForm";
 
 const EditPage = () => {
     return (
