@@ -12,7 +12,7 @@ import { ArticleProps } from "./types";
 export async function fetchArticle(articleId: string): Promise<ArticleProps> {
     try{
         // APIのベースURLを環境変数から取得
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const baseUrl = process.env.API_INTERNAL_URL;
         const url = `${baseUrl}/article/${articleId}`;
 
         // APIから記事データを取得

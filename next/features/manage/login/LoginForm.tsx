@@ -2,7 +2,9 @@
 
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ApiError } from "@/util/errors";
 import { login, verifyAuth } from "./loginService";
 import { LoginFormData } from "./types";
 
@@ -12,6 +14,7 @@ const LoginForm = () => {
         password: "",
     });
 
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -24,8 +27,13 @@ const LoginForm = () => {
             if (!isAuthed) {
                 throw new Error("認証に失敗しました。再度お試しください。");
             }
+            router.push("/manage/home");
         } catch (error) {
-            setErrorMessage("ログインに失敗しました。");
+            if (error instanceof ApiError && error.status === 401) {
+                setErrorMessage("IDまたはパスワードが正しくありません。");
+            } else {
+                setErrorMessage("ログインに失敗しました。");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -65,7 +73,7 @@ const LoginForm = () => {
                         {errorMessage}
                     </Typography>
                 )}
-                <Button variant="contained" onClick={handleLogin} disabled={isLoading}>
+                <Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
                     ログイン
                 </Button>
             </Stack>

@@ -11,7 +11,7 @@ import { ArticleRecordProps } from "./types";
 export async function fetchArticles(): Promise<ArticleRecordProps[]> {
     try {
         // APIのベースURLを環境変数から取得
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const baseUrl = process.env.API_INTERNAL_URL;
         const url = `${baseUrl}/articles`;
 
         // APIから記事一覧を取得

@@ -1,4 +1,4 @@
-import PostForm from "@/features/post/PostForm";
+import PostForm from "@/features/manage/post/PostForm";
 
 const PostPage = () => {
     return (

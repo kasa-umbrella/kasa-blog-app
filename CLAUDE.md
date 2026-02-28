@@ -98,7 +98,7 @@ docker-compose.prod.yml  # 本番環境
 
 ```bash
 # 開発環境起動
-docker compose up --build
+docker compose --profile dev up --build
 
 # 本番環境起動
 docker compose --profile prod up --build
@@ -146,6 +146,6 @@ npm run lint     # Lint 実行
 
 ## Deployment
 
-- **開発**: `docker compose up --build` (hot reload 有効, API:8000, FE:3000, DB:3306)
+- **開発**: `docker compose --profile dev up --build` (hot reload 有効, API:8000, FE:3000, DB:3306)
 - **本番**: `docker compose --profile prod up --build` (API:8000 x4 workers, FE:3001, Nginx:80, DB:3306)
 - **画像ストレージ**: Sakura Cloud Object Storage (`s3.isk01.sakurastorage.jp`)

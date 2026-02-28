@@ -8,14 +8,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # 依存関係（開発+本番）をキャッシュする層
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN NODE_OPTIONS=--max-old-space-size=512 npm ci
 
 # ビルド: dev 依存を使ってビルド後、不要な dev 依存を削除
 FROM deps AS builder
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 COPY . .
-RUN npm run build \
+RUN NODE_OPTIONS=--max-old-space-size=512 npm run build \
 	&& npm prune --omit=dev
 
 # 実行（本番）
@@ -27,6 +27,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # 必要ファイルのみコピー
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/node_modules ./node_modules
 

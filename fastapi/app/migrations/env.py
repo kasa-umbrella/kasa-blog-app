@@ -6,13 +6,14 @@ from pathlib import Path
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-# Pythonパスに親ディレクトリを追加して、appモジュールをインポート可能にする
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+# /app をパスに追加してモデルと同じ import パスを使う
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.database import Base
+from database import Base
 
 # モデルをインポートしてBaseのmetadataに登録
-from app.models.article import Article  # noqa: F401
+from models.article import Article  # noqa: F401
+from models.user import User  # noqa: F401
 
 from alembic import context
 

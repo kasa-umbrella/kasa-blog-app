@@ -42,13 +42,13 @@ cp .env.example .env
 
 ```bash
 # 開発環境を起動
-docker compose up --build -d
+docker compose --profile dev up --build -d
 
 # ログを見る（任意）
 docker compose logs -f
 
 # 停止
-docker compose down
+docker compose --profile dev down
 ```
 
 起動後、以下のURLでアクセス可能：
@@ -79,6 +79,10 @@ docker compose --profile prod down
 - `MYSQL_DATABASE`: データベース名
 - `DATABASE_URL`: FastAPI 用の DB 接続文字列
   - 例: `mysql+pymysql://root:password@mysql:3306/kasa_blog_db`
+- `JWT_SECRET_KEY`: JWT 署名に使う秘密鍵（本番では必ず変更）
+- `CORS_ORIGINS`: CORS で許可するオリジン（カンマ区切りで複数指定可）
+  - 例: `http://localhost:3000` / 本番: `https://example.com`
+- `SECURE_COOKIES`: Cookie の `Secure` 属性（HTTPS 本番環境では `true` に変更）
 - `NEXT_PUBLIC_API_BASE_URL`: Next.js から API にアクセスするための URL
 - ポート設定: `FASTAPI_PORT`, `MYSQL_PORT`, `NEXT_DEV_PORT`, `NEXT_PROD_PORT`, `NGINX_PORT`
 
@@ -90,28 +94,31 @@ docker compose --profile prod down
 ### マイグレーション適用
 ```bash
 # 開発環境の場合
-docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
+docker compose exec kasa-blog-api alembic -c /app/alembic.ini upgrade head
 
 # 本番環境の場合
-docker compose --profile prod exec kasa-blog-api-prod alembic -c app/alembic.ini upgrade head
+docker compose --profile prod exec kasa-blog-api-prod alembic -c /app/alembic.ini upgrade head
 ```
 
 ### 変更の自動生成
 ```bash
 # モデル変更から差分を生成（開発環境）
-docker compose exec kasa-blog-api alembic -c app/alembic.ini revision --autogenerate -m "update schema"
+docker compose exec kasa-blog-api alembic -c /app/alembic.ini revision --autogenerate -m "update schema"
 
 # 生成後に適用
-docker compose exec kasa-blog-api alembic -c app/alembic.ini upgrade head
+docker compose exec kasa-blog-api alembic -c /app/alembic.ini upgrade head
 ```
+
+> **注意**: 新しいモデルを追加した場合は `fastapi/app/migrations/env.py` に `from models.xxx import Xxx` のインポートを追加してください。追加しないと autogenerate でテーブルが検出されません。
 
 ## API 概要
 - `GET /` … ウェルカムメッセージ
 - `GET /db-test` … DB 接続確認（`SELECT 1`）
 - `GET /api/articles` … 記事一覧
 - `GET /api/article/{article_id}` … 記事詳細
-- `POST /api/login` … ログイン
-- `GET /api/auth` … 認証確認
+- `POST /api/login` … ログイン（JWT を httpOnly Cookie にセット）
+- `GET /api/auth` … 認証確認（Cookie の JWT を検証）
+- `POST /api/logout` … ログアウト（Cookie を削除）
 
 > エンドポイントの詳細・試験は [http://localhost:8000/docs](http://localhost:8000/docs) を参照。
 
@@ -121,7 +128,7 @@ Next.js のソースは `next/` 配下です。開発サーバはホットリロ
 ### Lint（ESLint）
 ```bash
 # 開発環境で実行
-docker compose exec next-dev npm run lint
+docker compose --profile dev exec next-dev npm run lint
 ```
 
 ### 本番ビルドの確認
@@ -148,6 +155,9 @@ docker compose --profile prod up --build -d
 - **マイグレーションで `DATABASE_URL` 未設定**
   - `.env` ファイルが正しく設定されているか確認してください。
   - 環境変数の確認: `docker compose exec kasa-blog-api env | grep DATABASE_URL`
+- **autogenerate で既存テーブルが「削除対象」として検出される**
+  - `fastapi/app/migrations/env.py` のインポートパスがモデルと一致していない可能性があります。
+  - モデルは `from database import Base` を使っているため、`env.py` も同じパスでインポートする必要があります。`from app.database import Base` と書くと別の `Base` として扱われ、既存テーブルが消える差分が生成されます。
 - **Next.js が起動しない**
   - コンテナのログを確認: `docker compose logs -f next-dev`
 - **.env ファイルが見つからない**
@@ -162,12 +172,12 @@ docker compose down
 docker compose --profile prod down
 
 # 再起動（開発環境）
-docker compose restart kasa-blog-api next-dev
+docker compose --profile dev restart kasa-blog-api next-dev
 
 # ボリュームを含めて完全停止（DB初期化に注意）
-docker compose down -v
+docker compose --profile dev down -v
 
 # イメージの再ビルド（コードを大幅に変更した場合）
-docker compose build --no-cache
-docker compose up --build -d
+docker compose --profile dev build --no-cache
+docker compose --profile dev up --build -d
 ```
