@@ -2,6 +2,7 @@
 
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ApiError } from "@/util/errors";
 import { login, verifyAuth } from "./loginService";
@@ -13,6 +14,7 @@ const LoginForm = () => {
         password: "",
     });
 
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -25,6 +27,7 @@ const LoginForm = () => {
             if (!isAuthed) {
                 throw new Error("認証に失敗しました。再度お試しください。");
             }
+            router.push("/manage/home");
         } catch (error) {
             if (error instanceof ApiError && error.status === 401) {
                 setErrorMessage("IDまたはパスワードが正しくありません。");

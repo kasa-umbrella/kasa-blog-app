@@ -3,14 +3,12 @@
 import os
 from datetime import datetime, timedelta, timezone
 
+import bcrypt
 from fastapi import Response
 from jose import jwt
-from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from models.user import User
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
 ALGORITHM = "HS256"
@@ -26,7 +24,7 @@ def get_user_by_id(db: Session, login_id: str) -> User | None:
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
 
 
 def authenticate_user(db: Session, login_id: str, password: str) -> User | None:
