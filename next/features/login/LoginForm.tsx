@@ -65,7 +65,7 @@ const LoginForm = () => {
                         {errorMessage}
                     </Typography>
                 )}
-                <Button variant="contained" onClick={handleLogin} disabled={isLoading}>
+                <Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
                     ログイン
                 </Button>
             </Stack>
