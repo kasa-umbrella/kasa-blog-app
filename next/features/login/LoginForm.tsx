@@ -3,6 +3,7 @@
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { ApiError } from "@/util/errors";
 import { login, verifyAuth } from "./loginService";
 import { LoginFormData } from "./types";
 
@@ -25,8 +26,7 @@ const LoginForm = () => {
                 throw new Error("認証に失敗しました。再度お試しください。");
             }
         } catch (error) {
-            const status = (error as Error & { status?: number }).status;
-            if (status === 401) {
+            if (error instanceof ApiError && error.status === 401) {
                 setErrorMessage("IDまたはパスワードが正しくありません。");
             } else {
                 setErrorMessage("ログインに失敗しました。");

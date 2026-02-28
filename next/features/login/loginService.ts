@@ -1,3 +1,4 @@
+import { ApiError } from "@/util/errors";
 import { LoginFormData, LoginResponse } from "./types";
 
 /**
@@ -26,9 +27,7 @@ export const login = async (loginFormData: LoginFormData): Promise<LoginResponse
 
 		if (!res.ok) {
 			const errorText = await res.text();
-			const error = new Error(`ログインに失敗しました。: ${res.status} ${errorText}`);
-			(error as Error & { status: number }).status = res.status;
-			throw error;
+			throw new ApiError(res.status, `ログインに失敗しました。: ${res.status} ${errorText}`);
 		}
 
 		const data = (await res.json()) as LoginResponse;
