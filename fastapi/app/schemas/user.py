@@ -11,7 +11,4 @@ class LoginRequest(BaseModel):
 
 
 class LoginResponse(BaseModel):
-    access_token: str = Field(..., alias="accessToken")
-    token_type: str = Field(default="bearer", alias="tokenType")
-
-    model_config = {"populate_by_name": True}
+    message: str = "ログインに成功しました"

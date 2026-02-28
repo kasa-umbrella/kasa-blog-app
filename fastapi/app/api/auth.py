@@ -1,23 +1,47 @@
 """認証関連のAPIエンドポイント"""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from database import get_database
 from schemas.user import LoginRequest, LoginResponse
-from services.userService import authenticate_user, create_access_token
+from services.userService import (
+    authenticate_user,
+    clear_auth_cookie,
+    create_access_token,
+    set_auth_cookie,
+    verify_access_token,
+)
 
 router = APIRouter()
 
 
 @router.post("/login", response_model=LoginResponse)
-def login(request: LoginRequest, db: Session = Depends(get_database)):
+def login(request: LoginRequest, response: Response, db: Session = Depends(get_database)):
     user = authenticate_user(db, request.login_id, request.password)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="ログインIDまたはパスワードが正しくありません",
-            headers={"WWW-Authenticate": "Bearer"},
         )
     token = create_access_token(user.id)
-    return LoginResponse(accessToken=token)
+    set_auth_cookie(response, token)
+    return LoginResponse()
+
+
+@router.get("/auth")
+def verify_auth(access_token: Optional[str] = Cookie(default=None)):
+    if access_token is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="未認証")
+    user_id = verify_access_token(access_token)
+    if user_id is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="無効なトークンです")
+    return {"userId": user_id}
+
+
+@router.post("/logout")
+def logout(response: Response):
+    clear_auth_cookie(response)
+    return {"message": "ログアウトしました"}
