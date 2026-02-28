@@ -26,7 +26,9 @@ export const login = async (loginFormData: LoginFormData): Promise<LoginResponse
 
 		if (!res.ok) {
 			const errorText = await res.text();
-			throw new Error(`ログインに失敗しました。: ${res.status} ${errorText}`);
+			const error = new Error(`ログインに失敗しました。: ${res.status} ${errorText}`);
+			(error as Error & { status: number }).status = res.status;
+			throw error;
 		}
 
 		const data = (await res.json()) as LoginResponse;
