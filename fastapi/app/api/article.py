@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from fastapi import APIRouter
-from schemas.article import article
+from fastapi import APIRouter, Depends
+from schemas.article import ArticleInput, article
+from dependencies import require_auth
 
 router = APIRouter()
 
@@ -41,3 +42,21 @@ def get_article_by_id(article_id: str):
     )
 
     return article_data
+
+
+@router.post("/article")
+def create_article(body: ArticleInput, _: str = Depends(require_auth)):
+    print(body)
+    return {"message": "ok"}
+
+
+@router.put("/article/{article_id}")
+def update_article(article_id: str, body: ArticleInput, _: str = Depends(require_auth)):
+    print(article_id, body)
+    return {"message": "ok"}
+
+
+@router.delete("/article/{article_id}")
+def delete_article(article_id: str, _: str = Depends(require_auth)):
+    print(article_id)
+    return {"message": "ok"}
