@@ -1,6 +1,5 @@
 """ユーザー認証ビジネスロジック"""
 
-import os
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -9,14 +8,14 @@ from jose import jwt
 from sqlalchemy.orm import Session
 
 from models.user import User
-
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24時間
-
-COOKIE_NAME = "access_token"
-COOKIE_MAX_AGE = 60 * 60 * 24  # 24時間（秒）
-SECURE_COOKIES = os.getenv("SECURE_COOKIES", "false").lower() == "true"
+from util.constant import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    COOKIE_MAX_AGE,
+    COOKIE_NAME,
+    JWT_ALGORITHM,
+    JWT_SECRET_KEY,
+    SECURE_COOKIES,
+)
 
 
 def get_user_by_id(db: Session, login_id: str) -> User | None:
@@ -39,12 +38,12 @@ def authenticate_user(db: Session, login_id: str, password: str) -> User | None:
 def create_access_token(user_id: str) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"sub": user_id, "exp": expire}
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
 
 
 def verify_access_token(token: str) -> str | None:
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         user_id: str | None = payload.get("sub")
         return user_id
     except Exception:

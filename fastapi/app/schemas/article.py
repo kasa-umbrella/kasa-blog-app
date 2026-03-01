@@ -2,6 +2,17 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from pydantic import Field
 
+
+class ArticleInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    title: str
+    summary: str
+    main_image_url: str | None = Field(None, alias="mainImageUrl")
+    content: str
+    limited: bool = False
+
+
 class article(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
