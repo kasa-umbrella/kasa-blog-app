@@ -1,7 +1,10 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import get_database
 from schemas.article import ArticleInput, article
+from services.articleService import ArticleService
 from dependencies import require_auth
 
 router = APIRouter()
@@ -45,15 +48,19 @@ def get_article_by_id(article_id: str):
 
 
 @router.post("/article")
-def create_article(body: ArticleInput, _: str = Depends(require_auth)):
-    print(body)
-    return {"message": "ok"}
+def create_article(body: ArticleInput, _: str = Depends(require_auth), db: Session = Depends(get_database)):
+    service = ArticleService(db)
+    article_data = service.create_article(body)
+    return article_data
 
 
 @router.put("/article/{article_id}")
-def update_article(article_id: str, body: ArticleInput, _: str = Depends(require_auth)):
-    print(article_id, body)
-    return {"message": "ok"}
+def update_article(article_id: str, body: ArticleInput, _: str = Depends(require_auth), db: Session = Depends(get_database)):
+    service = ArticleService(db)
+    article_data = service.update_article(article_id, body)
+    if article_data is None:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return article_data
 
 
 @router.delete("/article/{article_id}")
