@@ -1,7 +1,8 @@
 'use client';
 
 import AppHeadTitle from "@/util/components/AppHeadTitle";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import { useSnackbar } from "@/util/context/AppSnackbarContext";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ApiError } from "@/util/errors";
@@ -16,7 +17,7 @@ const LoginForm = () => {
 
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const { setErrorMessage } = useSnackbar();
 
     useEffect(() => {
         verifyAuth().then((isAuthed) => {
@@ -26,7 +27,6 @@ const LoginForm = () => {
 
     const handleLogin = async () => {
         setIsLoading(true);
-        setErrorMessage(null);
         try {
             await login(loginFormData);
             const isAuthed = await verifyAuth();
@@ -74,12 +74,7 @@ const LoginForm = () => {
                         }))
                     }
                 />
-                {errorMessage && (
-                    <Typography color="error" variant="body2">
-                        {errorMessage}
-                    </Typography>
-                )}
-                <Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
+<Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
                     ログイン
                 </Button>
             </Stack>
