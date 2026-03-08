@@ -6,6 +6,14 @@ class ArticleService:
     def __init__(self, db_session):
         self.db_session = db_session
 
+    def get_articles(self) -> list[Article]:
+        query = self.db_session.query(Article).filter(Article.limited == False)
+        return query.order_by(Article.created_at.desc()).all()
+
+    def get_article_by_id(self, article_id: str) -> Article | None:
+        query = self.db_session.query(Article).filter(Article.id == article_id)
+        return query.first()
+
     def create_article(self, article_input: ArticleInput) -> Article:
         article = Article(
             title=article_input.title,
@@ -19,8 +27,11 @@ class ArticleService:
         self.db_session.refresh(article)
         return article
 
-    def update_article(self, article_id: str, article_input: ArticleInput) -> Article | None:
-        article = self.db_session.query(Article).filter(Article.id == article_id).first()
+    def update_article(
+        self, article_id: str, article_input: ArticleInput
+    ) -> Article | None:
+        query = self.db_session.query(Article).filter(Article.id == article_id)
+        article = query.first()
         if article is None:
             return None
         article.title = article_input.title

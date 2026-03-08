@@ -13,12 +13,12 @@ class ArticleInput(BaseModel):
     limited: bool = False
 
 
-class article(BaseModel):
+class ArticleDetail(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
         populate_by_name=True,  # fieldとalias両方を受け付ける
     )
-    
+
     article_id: str = Field(..., alias="articleId")
     title: str
     summery: str
@@ -27,3 +27,16 @@ class article(BaseModel):
     created_at: datetime = Field(..., alias="createdAt")
 
     model_config = {"populate_by_name": True}
+
+
+class ArticleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    id: str = Field(..., alias="articleId")
+    title: str
+    summary: str
+    main_image_url: str | None = Field(None, alias="mainImageUrl")
+    content: str
+    limited: bool
+    created_at: datetime = Field(..., alias="createdAt")
+    updated_at: datetime = Field(..., alias="updatedAt")
