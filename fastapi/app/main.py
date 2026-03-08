@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api import article, auth, root
+from api import article, auth, image, root
 
 
 app = FastAPI()
@@ -21,3 +21,4 @@ app.add_middleware(
 app.include_router(root.router)
 app.include_router(article.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
+app.include_router(image.router, prefix="/api")
