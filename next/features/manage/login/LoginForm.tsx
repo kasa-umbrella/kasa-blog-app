@@ -3,7 +3,7 @@
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiError } from "@/util/errors";
 import { login, verifyAuth } from "./loginService";
 import { LoginFormData } from "./types";
@@ -17,6 +17,12 @@ const LoginForm = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    useEffect(() => {
+        verifyAuth().then((isAuthed) => {
+            if (isAuthed) router.replace("/manage/home");
+        });
+    }, [router]);
 
     const handleLogin = async () => {
         setIsLoading(true);
