@@ -48,7 +48,7 @@ const LoginForm = () => {
     return (
         <Box sx={{ maxWidth: 500, mx: "auto" }}>
             <AppHeadTitle>
-                管理者ページログイン
+                ログイン
             </AppHeadTitle>
             <Stack spacing={2}>
                 <TextField
@@ -74,7 +74,7 @@ const LoginForm = () => {
                         }))
                     }
                 />
-<Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
+                <Button variant="contained" onClick={handleLogin} disabled={isLoading || !loginFormData.loginId || !loginFormData.password}>
                     ログイン
                 </Button>
             </Stack>
