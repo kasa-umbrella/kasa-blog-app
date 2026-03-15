@@ -21,3 +21,19 @@ tasks:
     desc: 開発環境プロファイルでdocker-composeを停止します。
     cmds:
       - docker compose --profile dev down
+
+  prod-build:
+    desc: 本番環境イメージをビルドします。
+    cmds:
+      - docker compose --profile prod build
+
+  prod-push:
+    desc: 本番環境イメージをDocker Hubにプッシュします。
+    cmds:
+      - docker compose --profile prod push
+
+  prod-deploy:
+    desc: 本番環境のビルドとプッシュを行います。
+    cmds:
+      - task: prod-build
+      - task: prod-push
