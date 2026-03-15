@@ -14,7 +14,7 @@ def get_articles(db: Session = Depends(get_database)):
     return service.get_articles()
 
 
-@router.get("/article/{article_id}", response_model=ArticleResponse)
+@router.get("/articles/{article_id}", response_model=ArticleResponse)
 def get_article_by_id(article_id: str, db: Session = Depends(get_database)):
     service = ArticleService(db)
     article_data = service.get_article_by_id(article_id)
@@ -23,15 +23,24 @@ def get_article_by_id(article_id: str, db: Session = Depends(get_database)):
     return article_data
 
 
-@router.post("/article")
-def create_article(body: ArticleInput, _: str = Depends(require_auth), db: Session = Depends(get_database)):
+@router.post("/articles", response_model=ArticleResponse)
+def create_article(
+    body: ArticleInput,
+    _: str = Depends(require_auth),
+    db: Session = Depends(get_database),
+):
     service = ArticleService(db)
     article_data = service.create_article(body)
     return article_data
 
 
-@router.put("/article/{article_id}")
-def update_article(article_id: str, body: ArticleInput, _: str = Depends(require_auth), db: Session = Depends(get_database)):
+@router.put("/articles/{article_id}", response_model=ArticleResponse)
+def update_article(
+    article_id: str,
+    body: ArticleInput,
+    _: str = Depends(require_auth),
+    db: Session = Depends(get_database),
+):
     service = ArticleService(db)
     article_data = service.update_article(article_id, body)
     if article_data is None:
@@ -39,7 +48,7 @@ def update_article(article_id: str, body: ArticleInput, _: str = Depends(require
     return article_data
 
 
-@router.delete("/article/{article_id}")
+@router.delete("/articles/{article_id}")
 def delete_article(article_id: str, _: str = Depends(require_auth)):
     print(article_id)
     return {"message": "ok"}

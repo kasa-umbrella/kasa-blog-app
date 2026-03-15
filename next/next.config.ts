@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactCompiler: true,
   images: {
     // 開発環境のNAT64でprivate 扱いを避けつつ、本番の最適化は維持する。

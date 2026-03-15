@@ -3,7 +3,7 @@ import { ArticleProps } from "./types";
 /**
  * 指定された ID の記事を API から取得します。
  *
- * サーバーはエンドポイント `GET ${NEXT_PUBLIC_API_BASE_URL}/article/{articleId}` を期待します。
+ * サーバーはエンドポイント `GET ${NEXT_PUBLIC_API_BASE_URL}/articles/{articleId}` を期待します。
  *
  * @param {string} articleId - 取得する記事の UUID。
  * @returns {Promise<ArticleProps>} 記事データ。
@@ -13,7 +13,7 @@ export async function fetchArticle(articleId: string): Promise<ArticleProps> {
     try{
         // APIのベースURLを環境変数から取得
         const baseUrl = process.env.API_INTERNAL_URL;
-        const url = `${baseUrl}/article/${articleId}`;
+        const url = `${baseUrl}/articles/${articleId}`;
 
         // APIから記事データを取得
         const res: Response = await fetch(url);        

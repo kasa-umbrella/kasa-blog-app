@@ -5,7 +5,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 /**
  * 投稿フォームのデータをサーバーへ送信して新しい記事を作成します。
  *
- * サーバーはエンドポイント `POST ${baseUrl}/post` を期待します。
+ * サーバーはエンドポイント `POST ${baseUrl}/articles` を期待します。
  * レスポンスが OK でない場合はエラーを投げます。
  *
  * @param {ArticleFormProps} article - 投稿する記事のデータ。
@@ -13,7 +13,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
  * @throws {Error} サーバーがエラー応答を返した場合にステータスコードを含むエラーを投げます。
  */
 export async function postArticle(article: ArticleFormProps): Promise<void> {
-    const res = await fetch(`${baseUrl}/post`, {
+    const res = await fetch(`${baseUrl}/articles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
@@ -26,7 +26,7 @@ export async function postArticle(article: ArticleFormProps): Promise<void> {
 /**
  * 既存の記事を更新するためにサーバーへデータを送信します。
  *
- * サーバーはエンドポイント `POST ${baseUrl}/edit` を期待します。
+ * サーバーはエンドポイント `PUT ${baseUrl}/articles/{articleId}` を期待します。
  * レスポンスが OK でない場合はエラーを投げます。
  *
  * @param {ArticleFormProps} article - 更新する記事のデータ（`articleId` を含むこと）。
@@ -34,8 +34,8 @@ export async function postArticle(article: ArticleFormProps): Promise<void> {
  * @throws {Error} サーバーがエラー応答を返した場合にステータスコードを含むエラーを投げます。
  */
 export async function editArticle(article: ArticleFormProps): Promise<void> {
-    const res = await fetch(`${baseUrl}/edit`, {
-        method: "POST",
+    const res = await fetch(`${baseUrl}/articles/${article.articleId}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(article),
     });

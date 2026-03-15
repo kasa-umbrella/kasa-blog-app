@@ -1,7 +1,7 @@
+import { redirect } from "next/navigation";
+
 const ManagePage = () => {
-    return (
-        <>管理ページ</>
-    );
+    redirect("/manage/home");
 };
 
 export default ManagePage;
