@@ -8,7 +8,7 @@ const EditForm = () => {
         summary: "これは編集用サンプル記事です。",
         isPublished: false,
         mainText: "これは編集用サンプル記事です。",
-        mainImage: null,
+        mainImageUrl: null,
     }
 
     return (
