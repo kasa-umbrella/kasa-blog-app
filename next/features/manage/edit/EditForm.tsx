@@ -6,8 +6,8 @@ const EditForm = () => {
         articleId: "0194ce69-6571-70cb-873b-5a02e5b87823",
         title: "編集用サンプル記事",
         summary: "これは編集用サンプル記事です。",
-        isPublished: false,
-        mainText: "これは編集用サンプル記事です。",
+        limited: false,
+        content: "これは編集用サンプル記事です。",
         mainImageUrl: null,
     }
 

@@ -20,8 +20,8 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         articleId: articleProps?.articleId ?? "",
         title: articleProps?.title ?? "",
         summary: articleProps?.summary ?? "",
-        isPublished: articleProps?.isPublished ?? false,
-        mainText: articleProps?.mainText ?? "",
+        limited: articleProps?.limited ?? false,
+        content: articleProps?.content ?? "",
         mainImageUrl: articleProps?.mainImageUrl ?? null,
     });
     const { setErrorMessage } = useSnackbar();
@@ -75,15 +75,15 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                     onChange={(e) => setArticle((prev) => ({ ...prev, summary: e.target.value }))}
                 />
                 <PublishRange
-                    value={article.isPublished}
-                    onChange={(e) => setArticle((prev) => ({ ...prev, isPublished: e.target.checked }))}
+                    value={article.limited}
+                    onChange={(e) => setArticle((prev) => ({ ...prev, limited: e.target.checked }))}
                 />
                 <RecentImageList onSelect={(url) => mainTextRef.current?.insertText(`![image](${url})`)} refreshKey={imageRefreshKey} />
                 <ImageUploadInput onChange={handleImageChange} />
                 <MainTextInput
                     ref={mainTextRef}
-                    value={article.mainText}
-                    onChange={(value) => setArticle((prev) => ({ ...prev, mainText: value }))}
+                    value={article.content}
+                    onChange={(value) => setArticle((prev) => ({ ...prev, content: value }))}
                 />
                 <Button variant="contained" onClick={handleSubmit} disabled={loading || imageUploading}>
                     {imageUploading ? "画像アップロード中..." : loading ? "送信中..." : isEditMode ? "更新" : "投稿"}
