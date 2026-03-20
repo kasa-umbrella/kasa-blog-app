@@ -61,15 +61,20 @@ docker compose --profile dev down
 本番環境では、最適化されたビルドと Nginx リバースプロキシが使用されます。
 
 ```bash
-# 本番環境を起動
-docker compose --profile prod up --build -d
+# .env をコピーして .env.prod を作成し、本番用の値に編集
+cp .env .env.prod
+
+# 本番環境を起動（.env.prod を使用）
+docker compose --env-file .env.prod --profile prod up --build -d
 
 # 80/tcp で公開
 open http://localhost/
 
 # 停止
-docker compose --profile prod down
+docker compose --env-file .env.prod --profile prod down
 ```
+
+> **注意**: 本番環境は `.env.prod` を参照します。`.env` との使い分けに注意してください。
 
 ## 環境変数
 すべての設定は `.env` ファイルで管理されています。

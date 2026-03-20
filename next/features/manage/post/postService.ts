@@ -16,6 +16,7 @@ export async function postArticle(article: ArticleFormProps): Promise<void> {
     const res = await fetch(`${baseUrl}/articles`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(article),
     });
     if (!res.ok) {
@@ -37,6 +38,7 @@ export async function editArticle(article: ArticleFormProps): Promise<void> {
     const res = await fetch(`${baseUrl}/articles/${article.articleId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(article),
     });
     if (!res.ok) {

@@ -6,7 +6,7 @@ export interface ArticleFormProps {
     articleId: string;
     title: string;
     summary: string;
-    isPublished: boolean;
-    mainText: string;
+    limited: boolean;
+    content: string;
     mainImageUrl: string | null;
 }
