@@ -1,8 +1,8 @@
 # Next.js ランタイム（app-prod）へのリバースプロキシ用 Nginx イメージ
 FROM nginx:1.25-alpine
 
-# 独自の設定を配置
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# テンプレートとして配置（起動時に envsubst で変数展開される）
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 
