@@ -6,10 +6,10 @@ from pydantic import Field
 class ArticleInput(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    title: str
-    summary: str
-    main_image_url: str | None = Field(None, alias="mainImageUrl")
-    content: str
+    title: str = Field(..., min_length=1, max_length=15)
+    summary: str = Field(..., min_length=1, max_length=100)
+    main_image_url: str = Field(..., alias="mainImageUrl")
+    content: str = Field(..., min_length=1)
     limited: bool = False
 
 
