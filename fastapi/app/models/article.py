@@ -16,7 +16,7 @@ class Article(Base):
     )
     title: str = Column(String(15), nullable=False)
     summary: str = Column(String(100), nullable=False)
-    main_image_url: str = Column(String(255), nullable=True)
+    main_image_url: str = Column(String(255), nullable=False)
     content: str = Column(Text, nullable=False)
     limited: bool = Column(Integer, default=0, nullable=False)
     created_at: datetime = Column(DateTime, default=datetime.now, nullable=False)

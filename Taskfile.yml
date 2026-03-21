@@ -32,6 +32,11 @@ tasks:
     cmds:
       - docker compose --profile prod push
 
+  prod-pull:
+    desc: 本番環境イメージをDocker Hubからプルします。
+    cmds:
+      - docker compose --profile prod pull
+
   prod-deploy:
     desc: 本番環境のビルドとプッシュを行います。
     cmds:

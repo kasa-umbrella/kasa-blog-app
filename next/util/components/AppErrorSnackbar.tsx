@@ -12,7 +12,7 @@ const AppErrorSnackbar = () => {
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
             onClose={() => setErrorMessage(null)}
         >
-            <Alert severity="error" variant="filled" onClose={() => setErrorMessage(null)}>
+            <Alert severity="error" variant="filled" onClose={() => setErrorMessage(null)} sx={{ whiteSpace: "pre-line" }}>
                 {errorMessage}
             </Alert>
         </Snackbar>

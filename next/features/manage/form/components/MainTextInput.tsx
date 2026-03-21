@@ -50,7 +50,7 @@ const MainTextInput = forwardRef<MainTextInputHandle, { value: string; onChange:
                     size="small"
                     multiline
                     fullWidth
-                    minRows={3}
+                    minRows={20}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     inputRef={inputRef}

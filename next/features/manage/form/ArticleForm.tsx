@@ -9,6 +9,7 @@ import SummaryInput from "./components/SummeryInput";
 import PublishRange from "./components/PublishRange";
 import ImageUploadInput from "./components/ImageUploadInput";
 import RecentImageList from "./components/RecentImageList";
+import MainImagePreview from "./components/MainImagePreview";
 import { useSnackbar } from "@/util/context/AppSnackbarContext";
 import { ArticleFormProps, MainTextInputHandle } from "./types";
 import { postArticle, editArticle } from "../post/postService";
@@ -35,8 +36,7 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         if (!file) return;
         setImageUploading(true);
         try {
-            const imageUrl = await uploadImage(file);
-            setArticle((prev) => ({ ...prev, mainImageUrl: imageUrl }));
+            await uploadImage(file);
             setImageRefreshKey((prev) => prev + 1);
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : "画像のアップロードに失敗しました");
@@ -45,7 +45,23 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         }
     };
 
+    const validate = (): string[] => {
+        const errors: string[] = [];
+        if (!article.title) errors.push("タイトルは必須です");
+        else if (article.title.length > 15) errors.push("タイトルは15字以内で入力してください");
+        if (!article.summary) errors.push("概要は必須です");
+        else if (article.summary.length > 100) errors.push("概要は100字以内で入力してください");
+        if (!article.mainImageUrl) errors.push("メイン画像は必須です");
+        if (!article.content) errors.push("本文は必須です");
+        return errors;
+    };
+
     const handleSubmit = async () => {
+        const errors = validate();
+        if (errors.length > 0) {
+            setErrorMessage(errors.join("\n"));
+            return;
+        }
         setLoading(true);
         try {
             if (isEditMode) {
@@ -74,12 +90,17 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                     value={article.summary}
                     onChange={(e) => setArticle((prev) => ({ ...prev, summary: e.target.value }))}
                 />
+                <RecentImageList
+                    onSelect={(url) => mainTextRef.current?.insertText(`![image](${url})`)}
+                    onSelectAsMain={(url) => setArticle((prev) => ({ ...prev, mainImageUrl: url }))}
+                    refreshKey={imageRefreshKey}
+                />
+                <MainImagePreview mainImageUrl={article.mainImageUrl} />
+                <ImageUploadInput onChange={handleImageChange} />
                 <PublishRange
                     value={article.limited}
                     onChange={(e) => setArticle((prev) => ({ ...prev, limited: e.target.checked }))}
                 />
-                <RecentImageList onSelect={(url) => mainTextRef.current?.insertText(`![image](${url})`)} refreshKey={imageRefreshKey} />
-                <ImageUploadInput onChange={handleImageChange} />
                 <MainTextInput
                     ref={mainTextRef}
                     value={article.content}
