@@ -23,7 +23,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
             <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
             <ArticleTitle title={article.title} />
             <ArticleDate date={article.createdAt} />
-            <ArticleBody body={article.body} />
+            <ArticleBody body={article.content} />
         </Stack>
     );
 };

@@ -3,5 +3,5 @@ export interface ArticleProps {
     title: string | "";
     mainImageUrl: string | "";
     createdAt: string | "";
-    body: string | "";
+    content: string | "";
 }

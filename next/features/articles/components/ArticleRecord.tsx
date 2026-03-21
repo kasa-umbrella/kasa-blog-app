@@ -17,12 +17,12 @@ const ArticleDate = ({ date }: { date: string }) => (
     </Typography>
 );
 
-const ArticleSummery = ({ summery }: { summery: string }) => {
+const ArticleSummery = ({ summary }: { summary: string }) => {
     const limit = 45;
 
     return (
         <Typography fontSize={15}>
-            {summery.length > limit ? `${summery.substring(0, limit)}...` : summery}
+            {summary.length > limit ? `${summary.substring(0, limit)}...` : summary}
         </Typography>
     );
 };
@@ -50,7 +50,7 @@ const ArticleRecord = ({ article }: { article: ArticleRecordProps }) => {
                     <Stack spacing={0.5}>
                         <ArticleTitle title={article.title} />
                         <ArticleDate date={article.createdAt} />
-                        <ArticleSummery summery={article.summery} />
+                        <ArticleSummery summary={article.summary} />
                     </Stack>
                 </CardContent>
             </CardActionArea>

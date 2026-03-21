@@ -3,7 +3,7 @@ export interface ArticleRecordProps {
     articleId: string;
     title: string;
     createdAt: string;
-    summery: string;
+    summary: string;
     mainImageUrl: string;
 };
 
