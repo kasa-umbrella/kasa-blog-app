@@ -25,7 +25,7 @@ tasks:
   prod-build:
     desc: 本番環境イメージをビルドします。
     cmds:
-      - docker compose --profile prod build
+      - docker compose --env-file .env.prod --profile prod build
 
   prod-push:
     desc: 本番環境イメージをDocker Hubにプッシュします。
