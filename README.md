@@ -64,6 +64,11 @@ docker compose --profile dev down
 # .env をコピーして .env.prod を作成し、本番用の値に編集
 cp .env .env.prod
 
+# JWT_SECRET_KEY は必ず強いランダム文字列に変更すること
+# 生成コマンド（どちらか）:
+# node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+# openssl rand -hex 64
+
 # 本番環境を起動（.env.prod を使用）
 docker compose --env-file .env.prod --profile prod up --build -d
 
@@ -75,6 +80,13 @@ docker compose --env-file .env.prod --profile prod down
 ```
 
 > **注意**: 本番環境は `.env.prod` を参照します。`.env` との使い分けに注意してください。
+
+### 本番サーバーでの起動（Docker Hub からイメージを pull する場合）
+ローカルでビルドせず、Docker Hub に push 済みのイメージを使って起動する場合はこちら。
+
+```bash
+docker compose --env-file .env.prod --profile prod pull && docker compose --env-file .env.prod --profile prod up -d
+```
 
 ## 環境変数
 すべての設定は `.env` ファイルで管理されています。

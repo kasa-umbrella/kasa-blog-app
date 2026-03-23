@@ -148,6 +148,7 @@ services:
       network: host
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        NEXT_PUBLIC_S3_BASE_URL: ${NEXT_PUBLIC_S3_BASE_URL}
     image: ${DOCKER_HUB_USERNAME}/kasa-blog-next:prod
     container_name: kasa-blog-next-prod
     ports:
