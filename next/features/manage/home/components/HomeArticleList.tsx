@@ -1,74 +1,60 @@
 'use client';
 
 import AppHeadTitle from "@/util/components/AppHeadTitle";
-import { Box, Button, CircularProgress, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import AppTable, { AppTableColumn } from "@/util/components/AppTable";
+import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArticleRecordProps } from "@/features/articles/types";
 import { formatDate } from "@/util/functions/format";
+import { useSnackbar } from "@/util/context/AppSnackbarContext";
+import { fetchArticles } from "../homeService";
+
+const columns: AppTableColumn<ArticleRecordProps>[] = [
+    { label: "タイトル", render: (row) => <Link href={`/article/${row.articleId}`} target="_blank" rel="noopener noreferrer">{row.title}</Link> },
+    { label: "作成日", render: (row) => formatDate(row.createdAt) },
+    { label: "PV数", render: () => "-" },
+    {
+        label: "操作", shrink: true, render: (row) => (
+            <Button
+                variant="outlined"
+                size="small"
+                component={Link}
+                href={`/manage/edit/${row.articleId}`}
+            >
+                編集
+            </Button>
+        )
+    },
+];
 
 const HomeArticleList = () => {
     const [articles, setArticles] = useState<ArticleRecordProps[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { setIsLoading, setErrorMessage } = useSnackbar();
 
     useEffect(() => {
-        const fetchArticles = async () => {
+        const loadArticles = async () => {
+            setIsLoading(true);
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-                const res = await fetch(`${baseUrl}/articles`);
-                if (!res.ok) throw new Error(`取得に失敗しました: ${res.status}`);
-                const data = await res.json();
+                const data = await fetchArticles();
                 setArticles(data);
             } catch (e) {
-                setError(e instanceof Error ? e.message : "エラーが発生しました");
+                setErrorMessage(e instanceof Error ? e.message : "エラーが発生しました");
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         };
-        fetchArticles();
+        loadArticles();
     }, []);
 
     return (
         <Box>
             <AppHeadTitle>記事一覧</AppHeadTitle>
-            {loading && (
-                <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-                    <CircularProgress />
-                </Box>
-            )}
-            {error && <Typography color="error">{error}</Typography>}
-            {!loading && !error && (
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>タイトル</TableCell>
-                            <TableCell>作成日</TableCell>
-                            <TableCell align="right">操作</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {articles.map((article) => (
-                            <TableRow key={article.articleId}>
-                                <TableCell>{article.title}</TableCell>
-                                <TableCell>{formatDate(article.createdAt)}</TableCell>
-                                <TableCell align="right">
-                                    <Stack direction="row" spacing={1} justifyContent="flex-end">
-                                        <Button
-                                            variant="outlined"
-                                            size="small"
-                                            component={Link}
-                                            href={`/manage/edit/${article.articleId}`}
-                                        >
-                                            編集
-                                        </Button>
-                                    </Stack>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            )}
+            <AppTable
+                columns={columns}
+                rows={articles}
+                rowKey={(row) => row.articleId}
+            />
         </Box>
     );
 };
