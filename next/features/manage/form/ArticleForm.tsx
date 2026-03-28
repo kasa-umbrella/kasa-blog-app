@@ -6,7 +6,8 @@ import { useRef, useState } from "react";
 import TitleInput from "./components/TitleInput";
 import MainTextInput from "./components/MainTextInput";
 import SummaryInput from "./components/SummeryInput";
-import PublishRange from "./components/PublishRange";
+import LimitedSelect from "./components/LimitedSelect";
+import PublishSelect from "./components/PublishSelect";
 import ImageUploadInput from "./components/ImageUploadInput";
 import RecentImageList from "./components/RecentImageList";
 import MainImagePreview from "./components/MainImagePreview";
@@ -23,6 +24,7 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         title: articleProps?.title ?? "",
         summary: articleProps?.summary ?? "",
         limited: articleProps?.limited ?? false,
+        published: articleProps?.published ?? false,
         content: articleProps?.content ?? "",
         mainImageUrl: articleProps?.mainImageUrl ?? null,
     });
@@ -102,7 +104,7 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                 />
                 <MainImagePreview mainImageUrl={article.mainImageUrl} />
                 <ImageUploadInput onChange={handleImageChange} />
-                <PublishRange
+                <LimitedSelect
                     value={article.limited}
                     onChange={(e) => setArticle((prev) => ({ ...prev, limited: e.target.checked }))}
                 />
@@ -110,6 +112,10 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                     ref={mainTextRef}
                     value={article.content}
                     onChange={(value) => setArticle((prev) => ({ ...prev, content: value }))}
+                />
+                <PublishSelect
+                    value={article.published}
+                    onChange={(value) => setArticle((prev) => ({ ...prev, published: value }))}
                 />
                 <Button variant="contained" onClick={handleSubmit} disabled={loading || imageUploading}>
                     {imageUploading ? "画像アップロード中..." : loading ? "送信中..." : isEditMode ? "更新" : "投稿"}

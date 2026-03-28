@@ -5,6 +5,7 @@ from pydantic import Field
 
 class ArticleSearchParams(BaseModel):
     limited: bool | None = None
+    published: bool | None = None
 
 
 class ArticleInput(BaseModel):
@@ -15,6 +16,7 @@ class ArticleInput(BaseModel):
     main_image_url: str = Field(..., alias="mainImageUrl")
     content: str = Field(..., min_length=1)
     limited: bool = False
+    published: bool = False
 
 
 class ArticleDetail(BaseModel):
@@ -42,5 +44,6 @@ class ArticleResponse(BaseModel):
     main_image_url: str | None = Field(None, alias="mainImageUrl")
     content: str
     limited: bool
+    published: bool
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")

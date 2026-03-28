@@ -10,6 +10,8 @@ class ArticleService:
         query = self.db_session.query(Article)
         if params.limited is not None:
             query = query.filter(Article.limited == params.limited)
+        if params.published is not None:
+            query = query.filter(Article.published == params.published)
         return query.order_by(Article.created_at.desc()).all()
 
     def get_article_by_id(self, article_id: str) -> Article | None:
@@ -23,6 +25,7 @@ class ArticleService:
             main_image_url=article_input.main_image_url,
             content=article_input.content,
             limited=article_input.limited,
+            published=article_input.published,
         )
         self.db_session.add(article)
         self.db_session.commit()
@@ -41,6 +44,7 @@ class ArticleService:
         article.main_image_url = article_input.main_image_url
         article.content = article_input.content
         article.limited = article_input.limited
+        article.published = article_input.published
         self.db_session.commit()
         self.db_session.refresh(article)
         return article

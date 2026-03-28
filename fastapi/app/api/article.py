@@ -16,6 +16,7 @@ def get_articles(
 ):
     if user_id is None:
         params.limited = False
+        params.published = True
     service = ArticleService(db)
     return service.get_articles(params)
 

@@ -19,6 +19,7 @@ class Article(Base):
     main_image_url: str = Column(String(255), nullable=False)
     content: str = Column(Text, nullable=False)
     limited: bool = Column(Integer, default=0, nullable=False)
+    published: bool = Column(Integer, default=0, nullable=False)
     created_at: datetime = Column(DateTime, default=datetime.now, nullable=False)
     updated_at: datetime = Column(
         DateTime, default=datetime.now, onupdate=datetime.now, nullable=False

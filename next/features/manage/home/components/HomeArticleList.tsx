@@ -25,6 +25,11 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
         ),
     },
     {
+        label: "公開",
+        shrink: true,
+        render: (row) => row.published ? "○" : "-",
+    },
+    {
         label: "限定公開",
         shrink: true,
         render: (row) => row.limited ? "○" : "-",
