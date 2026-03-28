@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import AppScrollableBox from "./AppScrollableBox";
 import { ReactNode } from "react";
 
 export interface AppTableColumn<T> {
@@ -15,28 +16,30 @@ interface AppTableProps<T> {
 
 const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
     return (
-        <Table>
-            <TableHead>
-                <TableRow sx={{ backgroundColor: "primary.main" }}>
-                    {columns.map((col, i) => (
-                        <TableCell key={i} sx={{ py: 1, ...(col.shrink && { width: "1%", whiteSpace: "nowrap" }) }}>
-                            {col.label}
-                        </TableCell>
-                    ))}
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={rowKey(row)} sx={{ "&:last-child td": { borderBottom: 0 } }}>
+        <AppScrollableBox>
+            <Table sx={{ minWidth: 600 }}>
+                <TableHead>
+                    <TableRow sx={{ backgroundColor: "primary.light" }}>
                         {columns.map((col, i) => (
                             <TableCell key={i} sx={{ py: 1, ...(col.shrink && { width: "1%", whiteSpace: "nowrap" }) }}>
-                                {col.render(row)}
+                                {col.label}
                             </TableCell>
                         ))}
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row) => (
+                        <TableRow key={rowKey(row)} sx={{ "&:last-child td": { borderBottom: 0 } }}>
+                            {columns.map((col, i) => (
+                                <TableCell key={i} sx={{ py: 1, ...(col.shrink && { width: "1%", whiteSpace: "nowrap" }) }}>
+                                    {col.render(row)}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </AppScrollableBox>
     );
 };
 
