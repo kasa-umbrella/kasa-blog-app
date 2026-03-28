@@ -12,7 +12,7 @@ export async function fetchArticles(): Promise<ArticleRecordProps[]> {
     try {
         // APIのベースURLを環境変数から取得
         const baseUrl = process.env.API_INTERNAL_URL;
-        const url = `${baseUrl}/articles`;
+        const url = `${baseUrl}/articles?limited=false`;
 
         // APIから記事一覧を取得
         const res: Response = await fetch(url);
