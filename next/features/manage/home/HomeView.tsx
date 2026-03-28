@@ -8,8 +8,8 @@ import HomeArticleList from "./components/HomeArticleList";
 const HomeView = () => {
     return (
         <Stack spacing={4}>
-            <HomeLinks />
             <HomeDashboard />
+            <HomeLinks />
             <HomeArticleList />
         </Stack>
     );
