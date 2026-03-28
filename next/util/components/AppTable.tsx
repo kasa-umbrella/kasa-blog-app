@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 export interface AppTableColumn<T> {
     label: string;
     render: (row: T) => ReactNode;
-    shrink?: boolean;
+    width?: number;
 }
 
 interface AppTableProps<T> {
@@ -21,7 +21,7 @@ const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
                 <TableHead>
                     <TableRow sx={{ backgroundColor: "primary.light" }}>
                         {columns.map((col, i) => (
-                            <TableCell key={i} sx={{ py: 1, ...(col.shrink && { width: "1%", whiteSpace: "nowrap" }) }}>
+                            <TableCell key={i} sx={{ py: 1, ...(col.width && { width: col.width, whiteSpace: "nowrap" }) }}>
                                 {col.label}
                             </TableCell>
                         ))}
@@ -31,7 +31,7 @@ const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
                     {rows.map((row) => (
                         <TableRow key={rowKey(row)} sx={{ "&:last-child td": { borderBottom: 0 } }}>
                             {columns.map((col, i) => (
-                                <TableCell key={i} sx={{ py: 1, ...(col.shrink && { width: "1%", whiteSpace: "nowrap" }) }}>
+                                <TableCell key={i} sx={{ py: 1, ...(col.width && { width: col.width, whiteSpace: "nowrap" }) }}>
                                     {col.render(row)}
                                 </TableCell>
                             ))}

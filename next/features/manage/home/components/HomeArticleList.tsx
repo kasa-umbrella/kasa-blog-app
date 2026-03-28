@@ -13,7 +13,6 @@ import { fetchArticles } from "../homeService";
 const columns: AppTableColumn<ArticleRecordProps>[] = [
     {
         label: "作成日",
-        shrink: true,
         render: (row) => formatDate(row.createdAt),
     },
     {
@@ -26,21 +25,22 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
     },
     {
         label: "公開",
-        shrink: true,
+        width: 80,
         render: (row) => row.published ? "○" : "-",
     },
     {
         label: "限定公開",
-        shrink: true,
+        width: 80,
         render: (row) => row.limited ? "○" : "-",
     },
     {
         label: "PV数",
+        width: 80,
         render: () => "-",
     },
     {
         label: "操作",
-        shrink: true,
+        width: 80,
         render: (row) => (
             <Button
                 variant="contained"
