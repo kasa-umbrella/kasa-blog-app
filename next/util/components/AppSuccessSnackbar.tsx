@@ -10,7 +10,7 @@ const AppSuccessSnackbar = () => {
         <Snackbar
             open={!!successMessage}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            autoHideDuration={3000}
+            autoHideDuration={5000}
             onClose={() => setSuccessMessage(null)}
         >
             <Alert severity="success" variant="filled" onClose={() => setSuccessMessage(null)}>

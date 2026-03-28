@@ -72,8 +72,8 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
             } else {
                 await postArticle(article);
                 setSuccessMessage("記事を投稿しました");
+                router.push("/manage");
             }
-            router.push("/manage");
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : "エラーが発生しました");
         } finally {
