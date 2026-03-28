@@ -1,13 +1,15 @@
 from models.article import Article
-from schemas.article import ArticleInput
+from schemas.article import ArticleInput, ArticleSearchParams
 
 
 class ArticleService:
     def __init__(self, db_session):
         self.db_session = db_session
 
-    def get_articles(self) -> list[Article]:
-        query = self.db_session.query(Article).filter(Article.limited == False)
+    def get_articles(self, params: ArticleSearchParams) -> list[Article]:
+        query = self.db_session.query(Article)
+        if params.limited is not None:
+            query = query.filter(Article.limited == params.limited)
         return query.order_by(Article.created_at.desc()).all()
 
     def get_article_by_id(self, article_id: str) -> Article | None:

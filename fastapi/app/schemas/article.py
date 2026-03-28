@@ -3,6 +3,10 @@ from pydantic import BaseModel, ConfigDict
 from pydantic import Field
 
 
+class ArticleSearchParams(BaseModel):
+    limited: bool | None = None
+
+
 class ArticleInput(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 

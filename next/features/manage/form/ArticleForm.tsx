@@ -11,6 +11,7 @@ import ImageUploadInput from "./components/ImageUploadInput";
 import RecentImageList from "./components/RecentImageList";
 import MainImagePreview from "./components/MainImagePreview";
 import { useSnackbar } from "@/util/context/AppSnackbarContext";
+import { useRouter } from "next/navigation";
 import { ArticleFormProps, MainTextInputHandle } from "./types";
 import { postArticle, editArticle } from "../post/postService";
 import { uploadImage } from "./imageUploadService";
@@ -25,7 +26,8 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         content: articleProps?.content ?? "",
         mainImageUrl: articleProps?.mainImageUrl ?? null,
     });
-    const { setErrorMessage } = useSnackbar();
+    const { setErrorMessage, setSuccessMessage } = useSnackbar();
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [imageUploading, setImageUploading] = useState(false);
     const [imageRefreshKey, setImageRefreshKey] = useState(0);
@@ -66,9 +68,12 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         try {
             if (isEditMode) {
                 await editArticle(article);
+                setSuccessMessage("記事を更新しました");
             } else {
                 await postArticle(article);
+                setSuccessMessage("記事を投稿しました");
             }
+            router.push("/manage");
         } catch (error) {
             setErrorMessage(error instanceof Error ? error.message : "エラーが発生しました");
         } finally {
