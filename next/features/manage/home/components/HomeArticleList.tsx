@@ -11,11 +11,32 @@ import { useSnackbar } from "@/util/context/AppSnackbarContext";
 import { fetchArticles } from "../homeService";
 
 const columns: AppTableColumn<ArticleRecordProps>[] = [
-    { label: "作成日", shrink: true, render: (row) => formatDate(row.createdAt) },
-    { label: "タイトル", render: (row) => <Link href={`/article/${row.articleId}`} target="_blank">{row.title}</Link> },
-    { label: "PV数", render: () => "-" },
     {
-        label: "操作", shrink: true, render: (row) => (
+        label: "作成日",
+        shrink: true,
+        render: (row) => formatDate(row.createdAt),
+    },
+    {
+        label: "タイトル",
+        render: (row) => (
+            <Link href={`/article/${row.articleId}`} target="_blank">
+                {row.title}
+            </Link>
+        ),
+    },
+    {
+        label: "限定公開",
+        shrink: true,
+        render: (row) => row.limited ? "○" : "-",
+    },
+    {
+        label: "PV数",
+        render: () => "-",
+    },
+    {
+        label: "操作",
+        shrink: true,
+        render: (row) => (
             <Button
                 variant="contained"
                 size="small"
@@ -25,7 +46,7 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
             >
                 編集
             </Button>
-        )
+        ),
     },
 ];
 

@@ -5,6 +5,7 @@ export interface ArticleRecordProps {
     createdAt: string;
     summary: string;
     mainImageUrl: string;
+    limited: boolean;
 };
 
 //記事の検索条件の型定義
