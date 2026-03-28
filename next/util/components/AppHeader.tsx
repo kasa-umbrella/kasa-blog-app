@@ -11,7 +11,7 @@ const AppHeader = () => {
                         <Image
                             src="/headerImage.png"
                             alt="ヘッダーロゴ"
-                            loading="eager"
+                            priority
                             height={35}
                             width={236}
                         />
