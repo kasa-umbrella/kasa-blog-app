@@ -12,6 +12,7 @@ const AppHeader = () => {
                             src="/headerImage.png"
                             alt="ヘッダーロゴ"
                             priority
+                            unoptimized
                             height={35}
                             width={236}
                         />
