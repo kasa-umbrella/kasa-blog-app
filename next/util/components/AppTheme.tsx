@@ -1,6 +1,7 @@
 'use client';
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
+
 const theme = createTheme({
     palette: {
         primary: {

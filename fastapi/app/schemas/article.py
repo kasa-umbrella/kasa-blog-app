@@ -51,6 +51,7 @@ class ArticleResponse(BaseModel):
     published: bool
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
+    pv_count: int = Field(0, alias="pvCount")
 
 
 class ArticleListResponse(BaseModel):

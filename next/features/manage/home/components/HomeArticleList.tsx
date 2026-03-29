@@ -37,7 +37,7 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
     {
         label: "PV数",
         width: 80,
-        render: () => "-",
+        render: (row) => row.pvCount,
     },
     {
         label: "操作",

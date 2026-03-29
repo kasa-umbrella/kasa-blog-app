@@ -7,6 +7,7 @@ export interface ArticleRecordProps {
     mainImageUrl: string;
     limited: boolean;
     published: boolean;
+    pvCount: number;
 };
 
 //記事の検索条件の型定義
