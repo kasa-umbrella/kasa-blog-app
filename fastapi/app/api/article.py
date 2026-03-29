@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_database
-from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams
+from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
 from services.articleService import ArticleService
 from dependencies import require_auth, optional_auth
 
 router = APIRouter()
 
 
-@router.get("/articles", response_model=list[ArticleResponse])
+@router.get("/articles", response_model=ArticleListResponse)
 def get_articles(
     params: ArticleSearchParams = Depends(),
     db: Session = Depends(get_database),

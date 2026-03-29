@@ -12,5 +12,13 @@ export interface ArticleRecordProps {
 //記事の検索条件の型定義
 export interface ArticleSearchParams {
     keyword?: string;
-    pageNumber?: number; 
+    page?: number;
+};
+
+//記事一覧APIのレスポンス型定義
+export interface ArticleListResponse {
+    articles: ArticleRecordProps[];
+    total: number;
+    page: number;
+    limit: number;
 };

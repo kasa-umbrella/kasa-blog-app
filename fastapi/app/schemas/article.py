@@ -1,11 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from pydantic import Field
+from util.constant import ARTICLES_PER_PAGE
 
 
 class ArticleSearchParams(BaseModel):
     limited: bool | None = None
     published: bool | None = None
+    keyword: str | None = None
+    page: int = 1
+    limit: int = ARTICLES_PER_PAGE
 
 
 class ArticleInput(BaseModel):
@@ -47,3 +51,10 @@ class ArticleResponse(BaseModel):
     published: bool
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
+
+
+class ArticleListResponse(BaseModel):
+    articles: list[ArticleResponse]
+    total: int
+    page: int
+    limit: int

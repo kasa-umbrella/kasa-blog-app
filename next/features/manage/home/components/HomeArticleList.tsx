@@ -3,6 +3,7 @@
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import AppTable, { AppTableColumn } from "@/util/components/AppTable";
 import { Box, Button } from "@mui/material";
+import AppPagination from "@/util/components/AppPagination";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArticleRecordProps } from "@/features/articles/types";
@@ -57,14 +58,17 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
 
 const HomeArticleList = () => {
     const [articles, setArticles] = useState<ArticleRecordProps[]>([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const { setIsLoading, setErrorMessage } = useSnackbar();
 
     useEffect(() => {
         const loadArticles = async () => {
             setIsLoading(true);
             try {
-                const data = await fetchArticles();
-                setArticles(data);
+                const data = await fetchArticles(page);
+                setArticles(data.articles);
+                setTotalPages(Math.ceil(data.total / data.limit));
             } catch (e) {
                 setErrorMessage(e instanceof Error ? e.message : "エラーが発生しました");
             } finally {
@@ -72,7 +76,7 @@ const HomeArticleList = () => {
             }
         };
         loadArticles();
-    }, []);
+    }, [page]);
 
     return (
         <Box>
@@ -82,6 +86,7 @@ const HomeArticleList = () => {
                 rows={articles}
                 rowKey={(row) => row.articleId}
             />
+            <AppPagination page={page} count={totalPages} onChange={setPage} />
         </Box>
     );
 };

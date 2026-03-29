@@ -1,18 +1,40 @@
+from sqlalchemy import or_
 from models.article import Article
-from schemas.article import ArticleInput, ArticleSearchParams
+from schemas.article import ArticleInput, ArticleSearchParams, ArticleListResponse
 
 
 class ArticleService:
     def __init__(self, db_session):
         self.db_session = db_session
 
-    def get_articles(self, params: ArticleSearchParams) -> list[Article]:
+    def get_articles(self, params: ArticleSearchParams) -> ArticleListResponse:
         query = self.db_session.query(Article)
         if params.limited is not None:
             query = query.filter(Article.limited == params.limited)
         if params.published is not None:
             query = query.filter(Article.published == params.published)
-        return query.order_by(Article.created_at.desc()).all()
+        if params.keyword:
+            like = f"%{params.keyword}%"
+            query = query.filter(
+                or_(
+                    Article.title.ilike(like),
+                    Article.summary.ilike(like),
+                    Article.content.ilike(like),
+                )
+            )
+        total = query.count()
+        articles = (
+            query.order_by(Article.created_at.desc())
+            .offset((params.page - 1) * params.limit)
+            .limit(params.limit)
+            .all()
+        )
+        return ArticleListResponse(
+            articles=articles,
+            total=total,
+            page=params.page,
+            limit=params.limit,
+        )
 
     def get_article_by_id(self, article_id: str) -> Article | None:
         query = self.db_session.query(Article).filter(Article.id == article_id)
