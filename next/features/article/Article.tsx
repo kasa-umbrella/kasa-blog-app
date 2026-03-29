@@ -5,6 +5,7 @@ import { fetchArticle } from "./articleService";
 import { ArticleProps } from "./types";
 import MainImage from "./components/MainImage";
 import RecommendedArticles from "./components/RecommendedArticles";
+import AccessLogTracker from "./components/AccessLogTracker";
 import { Stack } from "@mui/material";
 
 const Article = async ({ articleId }: { articleId: string }) => {
@@ -21,6 +22,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
 
     return (
         <Stack spacing={2.5}>
+            <AccessLogTracker articleId={articleId} />
             <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
             <Stack spacing={0.5}>
                 <ArticleTitle title={article.title} />

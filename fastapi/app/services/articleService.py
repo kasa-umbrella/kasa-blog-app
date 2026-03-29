@@ -1,6 +1,7 @@
 from sqlalchemy import or_
 from models.article import Article
-from schemas.article import ArticleInput, ArticleSearchParams, ArticleListResponse
+from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
+from services.accessLogService import AccessLogService
 
 
 class ArticleService:
@@ -23,12 +24,21 @@ class ArticleService:
                 )
             )
         total = query.count()
-        articles = (
+        articles_orm = (
             query.order_by(Article.created_at.desc())
             .offset((params.page - 1) * params.limit)
             .limit(params.limit)
             .all()
         )
+
+        article_ids = [a.id for a in articles_orm]
+        pv_map = AccessLogService(self.db_session).get_pv_counts(article_ids)
+
+        articles = [
+            ArticleResponse.model_validate(a).model_copy(update={"pv_count": pv_map.get(a.id, 0)})
+            for a in articles_orm
+        ]
+
         return ArticleListResponse(
             articles=articles,
             total=total,
