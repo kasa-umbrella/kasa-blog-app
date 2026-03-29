@@ -10,7 +10,7 @@
 | UI | React + Material-UI | 19 / 7 |
 | Language (FE) | TypeScript | 5.x |
 | Backend | FastAPI + SQLAlchemy | latest |
-| Language (BE) | Python | 3.12 |
+| Language (BE) | Python | 3.14 |
 | DB | MySQL | 8.0 |
 | Migrations | Alembic | latest |
 | Infra | Docker Compose + Nginx | - |

@@ -7,6 +7,7 @@ export interface ArticleFormProps {
     title: string;
     summary: string;
     limited: boolean;
+    published: boolean;
     content: string;
     mainImageUrl: string | null;
 }

@@ -7,3 +7,5 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 3  # 3時間
 COOKIE_NAME = "access_token"
 COOKIE_MAX_AGE = 60 * 60 * 3  # 3時間（秒）
 SECURE_COOKIES = os.getenv("SECURE_COOKIES", "false").lower() == "true"
+
+ARTICLES_PER_PAGE = 15

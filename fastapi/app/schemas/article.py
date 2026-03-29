@@ -1,16 +1,26 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 from pydantic import Field
+from util.constant import ARTICLES_PER_PAGE
+
+
+class ArticleSearchParams(BaseModel):
+    limited: bool | None = None
+    published: bool | None = None
+    keyword: str | None = None
+    page: int = 1
+    limit: int = ARTICLES_PER_PAGE
 
 
 class ArticleInput(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    title: str
-    summary: str
-    main_image_url: str | None = Field(None, alias="mainImageUrl")
-    content: str
+    title: str = Field(..., min_length=1, max_length=15)
+    summary: str = Field(..., min_length=1, max_length=100)
+    main_image_url: str = Field(..., alias="mainImageUrl")
+    content: str = Field(..., min_length=1)
     limited: bool = False
+    published: bool = False
 
 
 class ArticleDetail(BaseModel):
@@ -38,5 +48,13 @@ class ArticleResponse(BaseModel):
     main_image_url: str | None = Field(None, alias="mainImageUrl")
     content: str
     limited: bool
+    published: bool
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
+
+
+class ArticleListResponse(BaseModel):
+    articles: list[ArticleResponse]
+    total: int
+    page: int
+    limit: int

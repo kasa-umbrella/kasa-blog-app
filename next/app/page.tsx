@@ -1,12 +1,19 @@
 import About from "@/features/about/About";
 import Articles from "@/features/articles/Articles";
 
-const ArticlesPage = () => {
+interface PageProps {
+    searchParams: Promise<{ keyword?: string; page?: string }>;
+}
+
+const ArticlesPage = async ({ searchParams }: PageProps) => {
+    const { keyword, page } = await searchParams;
     return (
         <>
             <About />
-            <Articles header="人気記事" />
-            <Articles header="記事一覧" />
+            <Articles
+                header="記事一覧"
+                searchParams={{ keyword, page: page ? Number(page) : undefined }}
+            />
         </>
     );
 };

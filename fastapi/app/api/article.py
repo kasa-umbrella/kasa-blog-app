@@ -1,17 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_database
-from schemas.article import ArticleInput, ArticleResponse
+from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
 from services.articleService import ArticleService
-from dependencies import require_auth
+from dependencies import require_auth, optional_auth
 
 router = APIRouter()
 
 
-@router.get("/articles", response_model=list[ArticleResponse])
-def get_articles(db: Session = Depends(get_database)):
+@router.get("/articles", response_model=ArticleListResponse)
+def get_articles(
+    params: ArticleSearchParams = Depends(),
+    db: Session = Depends(get_database),
+    user_id: str | None = Depends(optional_auth),
+):
+    if user_id is None:
+        params.limited = False
+        params.published = True
     service = ArticleService(db)
-    return service.get_articles()
+    return service.get_articles(params)
 
 
 @router.get("/articles/{article_id}", response_model=ArticleResponse)

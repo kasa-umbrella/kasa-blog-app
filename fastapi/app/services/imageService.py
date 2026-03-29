@@ -2,7 +2,6 @@
 
 import os
 import uuid
-from datetime import datetime, timedelta, timezone
 
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
@@ -41,9 +40,8 @@ class ImageService:
         image_url = f"{S3_ENDPOINT_URL}/{self.bucket_name}/{object_key}"
         return image_url
 
-    def get_recent_image_keys(self, hours: int = 1) -> list[str]:
-        threshold = datetime.now(timezone.utc) - timedelta(hours=hours)
+    def get_recent_image_keys(self, limit: int = 20) -> list[str]:
         response = self.client.list_objects_v2(Bucket=self.bucket_name)
         objects = response.get("Contents", [])
-        recent_keys = [obj["Key"] for obj in objects if obj["LastModified"] >= threshold]
-        return recent_keys
+        sorted_objects = sorted(objects, key=lambda obj: obj["LastModified"], reverse=True)
+        return [obj["Key"] for obj in sorted_objects[:limit]]

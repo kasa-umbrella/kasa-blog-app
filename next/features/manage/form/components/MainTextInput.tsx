@@ -19,6 +19,7 @@ const TOOLBAR_BUTTONS: ToolbarButton[] = [
     { label: "太字", before: "**", after: "**", placeholder: "テキスト" },
     { label: "横線", before: "\n---\n" },
     { label: "コード", before: "```\n", after: "\n```", placeholder: "コード" },
+    { label: "リンク", before: "[", after: "](url)", placeholder: "テキスト" },
 ];
 
 
@@ -50,7 +51,7 @@ const MainTextInput = forwardRef<MainTextInputHandle, { value: string; onChange:
                     size="small"
                     multiline
                     fullWidth
-                    minRows={3}
+                    minRows={20}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     inputRef={inputRef}

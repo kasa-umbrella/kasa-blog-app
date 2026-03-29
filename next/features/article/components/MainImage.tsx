@@ -15,6 +15,7 @@ const MainImage = ({ imageUrl, alt = "Article image" }: MainImageProps) => {
                 fill
                 style={{ objectFit: 'cover' }}
                 priority
+                quality={100}
             />
         </Box>
     );

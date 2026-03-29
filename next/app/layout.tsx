@@ -1,4 +1,5 @@
 import AppErrorSnackbar from "@/util/components/AppErrorSnackbar";
+import AppSuccessSnackbar from "@/util/components/AppSuccessSnackbar";
 import AppFooter from "@/util/components/AppFooter";
 import AppHeader from "@/util/components/AppHeader";
 import AppLoadingSnackbar from "@/util/components/AppLoadingSnackbar";
@@ -51,6 +52,7 @@ const RootLayout = ({ children, }: Readonly<{ children: React.ReactNode; }>) => 
                             <AppFooter />
                             <AppErrorSnackbar />
                             <AppLoadingSnackbar />
+                            <AppSuccessSnackbar />
                         </body>
                     </AppSnackbarProvider>
                 </AppTheme>
