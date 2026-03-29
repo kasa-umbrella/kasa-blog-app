@@ -9,8 +9,6 @@ interface AppPaginationProps {
 }
 
 const AppPagination = ({ page, count, onChange }: AppPaginationProps) => {
-    if (count <= 1) return null;
-
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
             <Pagination

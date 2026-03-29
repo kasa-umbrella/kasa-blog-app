@@ -11,6 +11,7 @@ export async function fetchArticleForEdit(articleId: string): Promise<ArticleFor
         title: data.title,
         summary: data.summary,
         limited: data.limited,
+        published: data.published,
         content: data.content,
         mainImageUrl: data.mainImageUrl,
     };

@@ -5,7 +5,7 @@ import Link from "next/link";
 const AppHeader = () => {
     return (
         <>
-            <AppBar position="static">
+            <AppBar position="static" elevation={2}>
                 <Toolbar>
                     <Link href="/">
                         <Image

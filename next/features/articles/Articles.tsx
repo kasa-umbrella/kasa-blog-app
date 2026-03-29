@@ -4,7 +4,7 @@ import ArticleRecord from "./components/ArticleRecord";
 import { Box } from "@mui/material";
 import { ArticleSearchParams } from "./types";
 import AppEmptyMessage from "@/util/components/AppEmptyMessage";
-import SearchBox from "./components/SearchBox";
+import ArticleSearchInput from "./components/ArticleSearchInput";
 import ArticlesPagination from "./components/ArticlesPagination";
 
 interface ArticlesProps {
@@ -21,7 +21,7 @@ const Articles = async ({ header, searchParams }: ArticlesProps) => {
             <AppHeadTitle>
                 {header}
             </AppHeadTitle>
-            <SearchBox keyword={searchParams?.keyword} />
+            <ArticleSearchInput keyword={searchParams?.keyword} />
             {articles.length === 0 ? (
                 <AppEmptyMessage message="表示できる記事がないにょん" />
             ) : (
