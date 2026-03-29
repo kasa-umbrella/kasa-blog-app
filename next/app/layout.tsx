@@ -41,7 +41,7 @@ const RootLayout = ({ children, }: Readonly<{ children: React.ReactNode; }>) => 
                                     maxWidth: 900,
                                     minWidth: 250,
                                     mt: 3,
-                                    mb: 20,
+                                    mb: 15,
                                     mx: "auto",
                                     px: 2,
                                     flexGrow: 1,

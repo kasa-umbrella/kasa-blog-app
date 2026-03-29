@@ -2,7 +2,7 @@
 
 import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { Box, Button, Stack } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TitleInput from "./components/TitleInput";
 import MainTextInput from "./components/MainTextInput";
 import SummaryInput from "./components/SummeryInput";
@@ -82,6 +82,23 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
             setLoading(false);
         }
     };
+
+    const handleSubmitRef = useRef(handleSubmit);
+    useEffect(() => {
+        handleSubmitRef.current = handleSubmit;
+    });
+
+    useEffect(() => {
+        if (!isEditMode) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                handleSubmitRef.current();
+            }
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [isEditMode]);
 
     return (
         <Box>

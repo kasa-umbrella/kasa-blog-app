@@ -20,5 +20,10 @@ export function formatDate(date: string | Date): string {
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
+    return `${year}年${month}月${day}日`;
+}
+
+export function isWithin24Hours(date: string | Date): boolean {
+    const d: Date = typeof date === 'string' ? new Date(date) : date;
+    return Date.now() - d.getTime() < 24 * 60 * 60 * 1000;
 }
