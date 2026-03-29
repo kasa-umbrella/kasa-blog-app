@@ -14,6 +14,7 @@ from database import Base
 # モデルをインポートしてBaseのmetadataに登録
 from models.article import Article  # noqa: F401
 from models.user import User  # noqa: F401
+from models.access_log import AccessLog  # noqa: F401
 
 from alembic import context
 
