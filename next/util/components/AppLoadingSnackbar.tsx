@@ -12,7 +12,7 @@ const AppLoadingSnackbar = () => {
                 message={
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <CircularProgress size={20} color="inherit" />
-                        <Typography variant="body2">処理中...</Typography>
+                        <Typography>処理中...</Typography>
                     </Stack>
                 }
             />

@@ -19,7 +19,7 @@ const RecentImageList = ({ onSelect, onSelectAsMain, refreshKey }: { onSelect: (
     return (
         <Stack spacing={1} sx={{ mt: 2 }}>
             <Box>
-                <Typography variant="body2" color="text.secondary">
+                <Typography color="text.secondary">
                     最近アップロードした画像
                 </Typography>
             </Box>

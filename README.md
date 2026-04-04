@@ -81,6 +81,23 @@ docker compose --env-file .env.prod --profile prod down
 
 > **注意**: 本番環境は `.env.prod` を参照します。`.env` との使い分けに注意してください。
 
+### SSL 証明書の初期化（初回のみ・Let's Encrypt）
+
+本番サーバーで HTTPS を有効にするには、初回起動前に以下のスクリプトで証明書を取得してください。
+
+```bash
+# DOMAIN と EMAIL を指定して実行
+DOMAIN=example.com EMAIL=you@example.com ./init-letsencrypt.sh
+```
+
+内部でやっていること：
+1. 自己署名のダミー証明書を生成（nginx が起動できるように）
+2. nginx を起動
+3. Let's Encrypt の ACME チャレンジ（HTTP-01）で本物の証明書を取得
+4. nginx をリロードして証明書を反映
+
+証明書の自動更新は certbot コンテナが担当します。コンテナ起動中は 12 時間ごとに `certbot renew` を実行し、有効期限が 30 日以内になったタイミングで自動更新します（`docker-compose.yml` の certbot `entrypoint` 参照）。サーバーが動いている限り手動での更新は不要です。
+
 ### 本番サーバーでの起動（Docker Hub からイメージを pull する場合）
 ローカルでビルドせず、Docker Hub に push 済みのイメージを使って起動する場合はこちら。
 
