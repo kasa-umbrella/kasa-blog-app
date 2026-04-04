@@ -16,9 +16,11 @@ export async function fetchArticle(articleId: string): Promise<ArticleProps> {
         const url = `${baseUrl}/articles/${articleId}`;
 
         // APIから記事データを取得
-        const res: Response = await fetch(url);        
+        const res: Response = await fetch(url);
         if (!res.ok) {
-            throw new Error(`サーバーとの通信に失敗しました。: ${res.status}`);
+            const error = new Error(`サーバーとの通信に失敗しました。: ${res.status}`);
+            (error as any).status = res.status;
+            throw error;
         }
         
         // レスポンスをJSONとしてパース

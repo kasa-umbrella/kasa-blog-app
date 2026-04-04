@@ -22,10 +22,16 @@ def get_articles(
 
 
 @router.get("/articles/{article_id}", response_model=ArticleResponse)
-def get_article_by_id(article_id: str, db: Session = Depends(get_database)):
+def get_article_by_id(
+    article_id: str,
+    db: Session = Depends(get_database),
+    user_id: str | None = Depends(optional_auth),
+):
     service = ArticleService(db)
     article_data = service.get_article_by_id(article_id)
     if article_data is None:
+        raise HTTPException(status_code=404, detail="Article not found")
+    if user_id is None and (article_data.limited or not article_data.published):
         raise HTTPException(status_code=404, detail="Article not found")
     return article_data
 

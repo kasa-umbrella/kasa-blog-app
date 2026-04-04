@@ -7,6 +7,7 @@ import MainImage from "./components/MainImage";
 import RecommendedArticles from "./components/RecommendedArticles";
 import AccessLogTracker from "./components/AccessLogTracker";
 import { Stack } from "@mui/material";
+import { notFound } from "next/navigation";
 
 const Article = async ({ articleId }: { articleId: string }) => {
     let article: ArticleProps;
@@ -14,6 +15,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
     try {
         article = await fetchArticle(articleId);
     } catch (error) {
+        if ((error as any).status === 404) notFound();
         console.error("記事コンポーネントでのエラー:", error);
         return (
             <div>記事の取得中にエラーが発生しました。</div>

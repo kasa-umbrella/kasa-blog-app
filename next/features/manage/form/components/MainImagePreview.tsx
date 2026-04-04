@@ -4,7 +4,7 @@ const MainImagePreview = ({ mainImageUrl }: { mainImageUrl: string | null }) => 
     return (
         <Stack spacing={1} sx={{ mt: 2 }}>
             <Box>
-                <Typography variant="body2" color="text.secondary">メイン画像</Typography>
+                <Typography color="text.secondary">メイン画像</Typography>
             </Box>
             <Box>
                 {mainImageUrl ? (
