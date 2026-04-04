@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from util.constant import HTTP_NOT_FOUND
 from sqlalchemy.orm import Session
 from database import get_database
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
@@ -30,9 +31,9 @@ def get_article_by_id(
     service = ArticleService(db)
     article_data = service.get_article_by_id(article_id)
     if article_data is None:
-        raise HTTPException(status_code=404, detail="Article not found")
+        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
     if user_id is None and (article_data.limited or not article_data.published):
-        raise HTTPException(status_code=404, detail="Article not found")
+        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
     return article_data
 
 
@@ -57,7 +58,7 @@ def update_article(
     service = ArticleService(db)
     article_data = service.update_article(article_id, body)
     if article_data is None:
-        raise HTTPException(status_code=404, detail="Article not found")
+        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
     return article_data
 
 

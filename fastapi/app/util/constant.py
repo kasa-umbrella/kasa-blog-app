@@ -1,5 +1,7 @@
 import os
 
+HTTP_NOT_FOUND = 404
+
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 3  # 3時間
