@@ -29,11 +29,13 @@ tasks:
 
   prod-push:
     desc: 本番環境イメージをDocker Hubにプッシュします。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --profile prod push
 
   prod-pull:
     desc: 本番環境イメージをDocker Hubからプルします。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --profile prod pull
 
@@ -45,11 +47,13 @@ tasks:
 
   prod-up:
     desc: 本番環境を起動します。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --env-file .env.prod --profile prod up -d
 
   prod-down:
     desc: 本番環境を停止します。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --env-file .env.prod --profile prod down
 
