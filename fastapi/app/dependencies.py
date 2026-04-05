@@ -4,7 +4,7 @@ from typing import Optional
 
 from fastapi import Cookie, HTTPException, status
 
-from services.userService import verify_access_token
+from services.user_service import verify_access_token
 
 
 def optional_auth(access_token: Optional[str] = Cookie(default=None)) -> Optional[str]:

@@ -1,7 +1,7 @@
 from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from dependencies import require_auth
-from services.imageService import ImageService
+from services.image_service import ImageService
 
 router = APIRouter()
 

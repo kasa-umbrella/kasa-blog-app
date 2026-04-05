@@ -1,7 +1,7 @@
 from sqlalchemy import or_
 from models.article import Article
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
-from services.accessLogService import AccessLogService
+from services.access_log_service import AccessLogService
 
 
 class ArticleService:

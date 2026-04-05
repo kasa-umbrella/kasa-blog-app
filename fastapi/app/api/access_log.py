@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 from database import get_database
 from schemas.access_log import AccessLogInput, WeeklyAccessResponse
-from services.accessLogService import AccessLogService
+from services.access_log_service import AccessLogService
 from dependencies import require_auth
 from util.constant import ACCESS_LOG_COOKIE_EXPIRE_SECONDS, ACCESS_LOG_COOKIE_NAME_PREFIX
 
