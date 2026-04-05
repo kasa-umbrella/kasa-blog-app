@@ -42,3 +42,32 @@ tasks:
     cmds:
       - task: prod-build
       - task: prod-push
+
+  prod-up:
+    desc: 本番環境を起動します。
+    cmds:
+      - docker compose --env-file .env.prod --profile prod up -d
+
+  prod-down:
+    desc: 本番環境を停止します。
+    cmds:
+      - docker compose --env-file .env.prod --profile prod down
+
+  prod-redeploy:
+    desc: 最新イメージをpullして本番環境を再起動します。
+    cmds:
+      - task: prod-pull
+      - task: prod-down
+      - task: prod-up
+
+  db:
+    desc: MySQLに接続します。
+    dotenv: ['.env']
+    cmds:
+      - docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
+
+  db-prod:
+    desc: 本番MySQLに接続します。
+    dotenv: ['.env.prod']
+    cmds:
+      - docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
