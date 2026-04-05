@@ -19,8 +19,17 @@ const notoSansJP = Noto_Sans_JP({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-    title: "かさたたのブログ",
+    title: {
+        default: "かさたたのブログ",
+        template: "%s - かさたたのブログ",
+    },
     description: "楽しいかさたたのブログです。",
+    openGraph: {
+        siteName: "かさたたのブログ",
+        description: "楽しいかさたたのブログです。",
+        locale: "ja_JP",
+        type: "website",
+    },
 };
 
 const RootLayout = ({ children, }: Readonly<{ children: React.ReactNode; }>) => {

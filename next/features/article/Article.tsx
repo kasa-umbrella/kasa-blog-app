@@ -8,7 +8,10 @@ import RecommendedArticles from "./components/RecommendedArticles";
 import AccessLogTracker from "./components/AccessLogTracker";
 import { Stack } from "@mui/material";
 import { notFound } from "next/navigation";
-import { HTTP_STATUS } from "@/util/const";
+import { HTTP_STATUS, SITE_AUTHOR } from "@/util/const";
+import JsonLd from "@/util/components/JsonLd";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kasatata.com";
 
 const Article = async ({ articleId }: { articleId: string }) => {
     let article: ArticleProps;
@@ -23,17 +26,37 @@ const Article = async ({ articleId }: { articleId: string }) => {
         );
     }
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: article.title,
+        datePublished: article.createdAt,
+        image: article.mainImageUrl || undefined,
+        url: `${BASE_URL}/article/${articleId}`,
+        author: {
+            "@type": "Person",
+            name: SITE_AUTHOR,
+        },
+        publisher: {
+            "@type": "Person",
+            name: SITE_AUTHOR,
+        },
+    };
+
     return (
-        <Stack spacing={2.5}>
-            <AccessLogTracker articleId={articleId} />
-            <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
-            <Stack spacing={0.5}>
-                <ArticleTitle title={article.title} />
-                <ArticleDate date={article.createdAt} />
+        <>
+            <JsonLd data={jsonLd} />
+            <Stack spacing={2.5}>
+                <AccessLogTracker articleId={articleId} />
+                <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
+                <Stack spacing={0.5}>
+                    <ArticleTitle title={article.title} />
+                    <ArticleDate date={article.createdAt} />
+                </Stack>
+                <ArticleBody body={article.content} />
+                <RecommendedArticles />
             </Stack>
-            <ArticleBody body={article.content} />
-            <RecommendedArticles />
-        </Stack>
+        </>
     );
 };
 
