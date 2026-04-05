@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     description: "現役ITエンジニアがのかさたたが綴る、楽しくて愉快なブログです。",
     openGraph: {
         description: "現役ITエンジニアがのかさたたが綴る、楽しくて愉快なブログです。",
+        images: [`${process.env.NEXT_PUBLIC_SITE_URL}/kasatata-long.png`],
     },
 };
 

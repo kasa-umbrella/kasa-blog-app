@@ -9,13 +9,14 @@ export async function generateMetadata({ params }: { params: Promise<{ articleId
         const article = await fetchArticle(articleId);
         return {
             title: article.title,
+            description: article.summary,
             openGraph: {
                 title: article.title,
+                description: article.summary,
                 type: "article",
                 images: article.mainImageUrl ? [{ url: article.mainImageUrl }] : [],
             },
         };
-        // summaryが追加されたら description: article.summary も設定する
     } catch {
         return {};
     }
