@@ -75,3 +75,8 @@ tasks:
     dotenv: ['.env.prod']
     cmds:
       - docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
+
+  docker-clean:
+    desc: Dockerのキャッシュ・未使用リソースをクリーンアップします。
+    cmds:
+      - docker system prune -a --volumes
