@@ -13,17 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     try {
-        // 全記事を取得するため、まず1件だけ叩いて total を取る
-        const first = await fetchArticles({ page: 1 });
-        const limit = first.limit;
-        const total = first.total;
-        const totalPages = Math.ceil(total / limit);
-
-        const pageRequests = Array.from({ length: totalPages - 1 }, (_, i) =>
-            fetchArticles({ page: i + 2 })
-        );
-        const rest = await Promise.all(pageRequests);
-        const allArticles = [first, ...rest].flatMap((res) => res.articles);
+        const { articles: allArticles } = await fetchArticles({ page: 1 });
 
         const articleRoutes: MetadataRoute.Sitemap = allArticles.map((article) => ({
             url: `${BASE_URL}/article/${article.articleId}`,
