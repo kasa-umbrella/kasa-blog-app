@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from database import get_database
 from schemas.user import LoginRequest, LoginResponse
-from services.userService import (
+from services.user_service import (
     authenticate_user,
     clear_auth_cookie,
     create_access_token,

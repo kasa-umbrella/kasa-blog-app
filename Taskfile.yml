@@ -29,16 +29,54 @@ tasks:
 
   prod-push:
     desc: 本番環境イメージをDocker Hubにプッシュします。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --profile prod push
 
   prod-pull:
     desc: 本番環境イメージをDocker Hubからプルします。
+    dotenv: ['.env.prod']
     cmds:
       - docker compose --profile prod pull
 
-  prod-deploy:
+  prod-release:
     desc: 本番環境のビルドとプッシュを行います。
     cmds:
       - task: prod-build
       - task: prod-push
+
+  prod-up:
+    desc: 本番環境を起動します。
+    dotenv: ['.env.prod']
+    cmds:
+      - docker compose --env-file .env.prod --profile prod up -d
+
+  prod-down:
+    desc: 本番環境を停止します。
+    dotenv: ['.env.prod']
+    cmds:
+      - docker compose --env-file .env.prod --profile prod down
+
+  prod-deploy:
+    desc: 最新イメージをpullして本番環境を再起動します。
+    cmds:
+      - task: prod-pull
+      - task: prod-down
+      - task: prod-up
+
+  deb-db:
+    desc: MySQLに接続します。
+    dotenv: ['.env']
+    cmds:
+      - docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
+
+  prod-db:
+    desc: 本番MySQLに接続します。
+    dotenv: ['.env.prod']
+    cmds:
+      - docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE}
+
+  docker-clean:
+    desc: Dockerのキャッシュ・未使用リソースをクリーンアップします。
+    cmds:
+      - docker system prune -a --volumes

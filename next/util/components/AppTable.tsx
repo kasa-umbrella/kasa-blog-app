@@ -18,10 +18,10 @@ const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
     return (
         <AppScrollableBox>
             <Table sx={{ minWidth: 600 }}>
-                <TableHead>
+                <TableHead sx={{ bgcolor: "primary.main" }}>
                     <TableRow>
                         {columns.map((col, i) => (
-                            <TableCell key={i} sx={{ py: 1, ...(col.width && { width: col.width, whiteSpace: "nowrap" }) }}>
+                            <TableCell key={i} sx={{ py: 1, color: "secondary.main", fontWeight: "bold", ...(col.width && { width: col.width, whiteSpace: "nowrap" }) }}>
                                 {col.label}
                             </TableCell>
                         ))}

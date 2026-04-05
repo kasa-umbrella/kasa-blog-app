@@ -5,7 +5,7 @@ import { Box, Button, Stack } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import TitleInput from "./components/TitleInput";
 import MainTextInput from "./components/MainTextInput";
-import SummaryInput from "./components/SummeryInput";
+import SummaryInput from "./components/SummaryInput";
 import LimitedSelect from "./components/LimitedSelect";
 import PublishSelect from "./components/PublishSelect";
 import ImageUploadInput from "./components/ImageUploadInput";

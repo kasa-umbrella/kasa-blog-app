@@ -3,7 +3,7 @@ from util.constant import HTTP_NOT_FOUND
 from sqlalchemy.orm import Session
 from database import get_database
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
-from services.articleService import ArticleService
+from services.article_service import ArticleService
 from dependencies import require_auth, optional_auth
 
 router = APIRouter()
