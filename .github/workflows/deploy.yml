@@ -28,7 +28,7 @@ jobs:
       - name: Build and push
         run: |
           docker compose --env-file .env.prod --profile prod build
-          docker compose --profile prod push
+          docker compose --env-file .env.prod --profile prod push
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
