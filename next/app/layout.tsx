@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     },
     description: "楽しいかさたたのブログです。",
     openGraph: {
+        url: process.env.NEXT_PUBLIC_SITE_URL,
         siteName: "かさたたのブログ",
         description: "楽しいかさたたのブログです。",
         locale: "ja_JP",
