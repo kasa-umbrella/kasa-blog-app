@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 from database import get_database
-from schemas.access_log import AccessLogInput, WeeklyAccessResponse
+from schemas.access_log import AccessLogInput, AccessLogListResponse, WeeklyAccessResponse
 from services.access_log_service import AccessLogService
 from dependencies import require_auth
 from util.constant import ACCESS_LOG_COOKIE_EXPIRE_SECONDS, ACCESS_LOG_COOKIE_NAME_PREFIX
@@ -15,6 +15,15 @@ def get_weekly_access(
     _: str = Depends(require_auth),
 ):
     return AccessLogService(db).get_weekly_access()
+
+
+@router.get("/access-log/list", response_model=AccessLogListResponse)
+def get_access_log_list(
+    page: int = 1,
+    db: Session = Depends(get_database),
+    _: str = Depends(require_auth),
+):
+    return AccessLogService(db).get_access_log_list(page=page)
 
 
 @router.post("/access-log/{article_id}", status_code=204)

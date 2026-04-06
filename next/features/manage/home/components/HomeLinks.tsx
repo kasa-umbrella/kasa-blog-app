@@ -30,6 +30,9 @@ const HomeLinks = () => {
                 <LinkButton onClick={() => router.push("/manage/post")}>
                     記事投稿
                 </LinkButton>
+                <LinkButton onClick={() => router.push("/manage/analysis")}>
+                    データ分析
+                </LinkButton>
                 <LinkButton onClick={handleLogout}>
                     ログアウト
                 </LinkButton>
