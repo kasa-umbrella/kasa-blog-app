@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from sqlalchemy import func
 from models.access_log import AccessLog
-from schemas.access_log import AccessLogInput, DailyAccessCount, WeeklyAccessResponse
+from models.article import Article
+from schemas.access_log import AccessLogInput, AccessLogListResponse, AccessLogRecord, DailyAccessCount, WeeklyAccessResponse
 
 
 class AccessLogService:
@@ -39,6 +40,34 @@ class AccessLogService:
             for i in range(6, -1, -1)
         ]
         return WeeklyAccessResponse(data=data)
+
+    def get_access_log_list(self, page: int = 1, per_page: int = 50) -> AccessLogListResponse:
+        offset = (page - 1) * per_page
+        total = self.db_session.query(func.count(AccessLog.id)).scalar()
+        rows = (
+            self.db_session.query(AccessLog, Article.title)
+            .outerjoin(Article, AccessLog.article_id == Article.id)
+            .order_by(AccessLog.created_at.desc())
+            .offset(offset)
+            .limit(per_page)
+            .all()
+        )
+        data = [
+            AccessLogRecord(
+                id=log.id,
+                created_at=log.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                article_title=title,
+                ip_address=log.ip_address,
+                user_agent=log.user_agent,
+            )
+            for log, title in rows
+        ]
+        return AccessLogListResponse(
+            data=data,
+            total=total,
+            page=page,
+            total_pages=(total + per_page - 1) // per_page,
+        )
 
     def get_pv_counts(self, article_ids: list[str]) -> dict[str, int]:
         if not article_ids:

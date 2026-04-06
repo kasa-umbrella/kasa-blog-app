@@ -12,12 +12,13 @@ interface AppTableProps<T> {
     columns: AppTableColumn<T>[];
     rows: T[];
     rowKey: (row: T) => string;
+    minWidth?: number;
 }
 
-const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
+const AppTable = <T,>({ columns, rows, rowKey, minWidth = 600 }: AppTableProps<T>) => {
     return (
         <AppScrollableBox>
-            <Table sx={{ minWidth: 600 }}>
+            <Table sx={{ minWidth }}>
                 <TableHead sx={{ bgcolor: "primary.main" }}>
                     <TableRow>
                         {columns.map((col, i) => (
@@ -29,7 +30,7 @@ const AppTable = <T,>({ columns, rows, rowKey }: AppTableProps<T>) => {
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
-                        <TableRow key={rowKey(row)} sx={{ "&:last-child td": { borderBottom: 0 } }}>
+                        <TableRow key={rowKey(row)} sx={{ "&:last-child td": { borderBottom: 0 }, "& td": { minHeight: "4em", height: "4em" } }}>
                             {columns.map((col, i) => (
                                 <TableCell key={i} sx={{ py: 1, ...(col.width && { width: col.width, whiteSpace: "nowrap" }) }}>
                                     {col.render(row)}
