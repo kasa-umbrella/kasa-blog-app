@@ -22,6 +22,7 @@ const ArticleSearchInput = ({ keyword }: ArticleSearchInputProps) => {
     const handleSearch = () => {
         const params = new URLSearchParams();
         if (value) params.set("keyword", value);
+        if (params.toString() === searchParams.toString()) return;
         setIsLoading(true);
         router.push(`/?${params.toString()}`);
     };
