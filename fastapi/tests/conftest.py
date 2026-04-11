@@ -8,9 +8,8 @@ os.environ.setdefault("CORS_ORIGINS", "http://localhost:3000")
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 
 from database import Base, get_database
 from dependencies import optional_auth, require_auth
@@ -18,22 +17,30 @@ from main import app
 import models.article  # noqa: F401 - テーブル登録のためインポート
 import models.access_log  # noqa: F401
 
-SQLITE_URL = "sqlite://"
+TEST_DB_PATH = "./test_temp.db"
+SQLITE_URL = f"sqlite:///{TEST_DB_PATH}"
 
-engine = create_engine(
-    SQLITE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
+engine = create_engine(SQLITE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-@pytest.fixture(autouse=True)
-def setup_db():
-    """各テスト前にテーブルを作成し、テスト後に破棄する"""
+@pytest.fixture(scope="session", autouse=True)
+def setup_tables():
+    """セッション全体で一度だけテーブルを作成し、終了後に削除する"""
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
+    if os.path.exists(TEST_DB_PATH):
+        os.remove(TEST_DB_PATH)
+
+
+@pytest.fixture(autouse=True)
+def clean_data():
+    """各テスト後にデータを全削除する"""
+    yield
+    with engine.begin() as conn:
+        for table in reversed(Base.metadata.sorted_tables):
+            conn.execute(table.delete())
 
 
 @pytest.fixture
@@ -46,7 +53,7 @@ def db():
 
 @pytest.fixture
 def client(db):
-    """未認証クライアント (db と同じセッションを共有)"""
+    """未認証クライアント"""
     app.dependency_overrides[get_database] = lambda: db
     app.dependency_overrides[optional_auth] = lambda: None
     with TestClient(app) as c:
@@ -56,7 +63,7 @@ def client(db):
 
 @pytest.fixture
 def auth_client(db):
-    """認証済みクライアント (db と同じセッションを共有)"""
+    """認証済みクライアント"""
     app.dependency_overrides[get_database] = lambda: db
     app.dependency_overrides[optional_auth] = lambda: "test-user-id"
     app.dependency_overrides[require_auth] = lambda: "test-user-id"
