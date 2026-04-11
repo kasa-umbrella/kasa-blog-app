@@ -14,6 +14,6 @@ export async function fetchArticleForEdit(articleId: string): Promise<ArticleFor
         published: data.published,
         content: data.content,
         mainImageUrl: data.mainImageUrl,
-        createdAt: data.createdAt,
+        publishedAt: data.publishedAt,
     };
 }

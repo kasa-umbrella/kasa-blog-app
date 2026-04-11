@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 
-const CreatedAtInput = (
+const PublishedAtInput = (
     { value, onChange }:
     { value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }
 ) => {
@@ -16,4 +16,4 @@ const CreatedAtInput = (
     );
 };
 
-export default CreatedAtInput;
+export default PublishedAtInput;

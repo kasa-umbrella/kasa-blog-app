@@ -21,7 +21,7 @@ class ArticleInput(BaseModel):
     content: str = Field(..., min_length=1)
     limited: bool = False
     published: bool = False
-    created_at: datetime | None = Field(None, alias="createdAt")
+    published_at: datetime | None = Field(None, alias="publishedAt")
 
 
 class ArticleDetail(BaseModel):
@@ -51,6 +51,7 @@ class ArticleResponse(BaseModel):
     limited: bool
     published: bool
     created_at: datetime = Field(..., alias="createdAt")
+    published_at: datetime | None = Field(None, alias="publishedAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     pv_count: int = Field(0, alias="pvCount")
 

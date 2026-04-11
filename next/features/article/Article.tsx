@@ -31,7 +31,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: article.title,
-        datePublished: article.createdAt,
+        datePublished: article.publishedAt,
         image: article.mainImageUrl || undefined,
         url: `${BASE_URL}/article/${articleId}`,
         author: {
@@ -58,7 +58,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
                 <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
                 <Stack spacing={0.5}>
                     <ArticleTitle title={article.title} />
-                    <ArticleDate date={article.createdAt} />
+                    <ArticleDate date={article.publishedAt} />
                 </Stack>
                 <ArticleBody body={article.content} />
                 <RecommendedArticles />

@@ -25,7 +25,7 @@ class ArticleService:
             )
         total = query.count()
         articles_orm = (
-            query.order_by(Article.created_at.desc())
+            query.order_by(Article.published_at.desc())
             .offset((params.page - 1) * params.limit)
             .limit(params.limit)
             .all()
@@ -59,8 +59,7 @@ class ArticleService:
             limited=article_input.limited,
             published=article_input.published,
         )
-        if article_input.created_at is not None:
-            article.created_at = article_input.created_at
+        article.published_at = article_input.published_at
         self.db_session.add(article)
         self.db_session.commit()
         self.db_session.refresh(article)
@@ -79,8 +78,7 @@ class ArticleService:
         article.content = article_input.content
         article.limited = article_input.limited
         article.published = article_input.published
-        if article_input.created_at is not None:
-            article.created_at = article_input.created_at
+        article.published_at = article_input.published_at
         self.db_session.commit()
         self.db_session.refresh(article)
         return article

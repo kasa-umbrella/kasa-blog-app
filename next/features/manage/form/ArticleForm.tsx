@@ -8,7 +8,7 @@ import MainTextInput from "./components/MainTextInput";
 import SummaryInput from "./components/SummaryInput";
 import LimitedSelect from "./components/LimitedSelect";
 import PublishSelect from "./components/PublishSelect";
-import CreatedAtInput from "./components/CreatedAtInput";
+import PublishedAtInput from "./components/PublishedAtInput";
 import ImageUploadInput from "./components/ImageUploadInput";
 import RecentImageList from "./components/RecentImageList";
 import MainImagePreview from "./components/MainImagePreview";
@@ -29,7 +29,7 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         published: articleProps?.published ?? false,
         content: articleProps?.content ?? "",
         mainImageUrl: articleProps?.mainImageUrl ?? null,
-        createdAt: articleProps?.createdAt ? toDatetimeLocal(articleProps.createdAt) : nowDatetimeLocal(),
+        publishedAt: articleProps?.publishedAt ? toDatetimeLocal(articleProps.publishedAt) : nowDatetimeLocal(),
     });
     const { setErrorMessage, setSuccessMessage } = useSnackbar();
     const router = useRouter();
@@ -109,9 +109,9 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                 {title}
             </AppHeadTitle>
             <Stack spacing={2}>
-                <CreatedAtInput
-                    value={article.createdAt}
-                    onChange={(e) => setArticle((prev) => ({ ...prev, createdAt: e.target.value }))}
+                <PublishedAtInput
+                    value={article.publishedAt}
+                    onChange={(e) => setArticle((prev) => ({ ...prev, publishedAt: e.target.value }))}
                 />
                 <TitleInput
                     value={article.title}
