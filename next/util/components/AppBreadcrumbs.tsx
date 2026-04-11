@@ -13,17 +13,25 @@ const SEGMENT_LABELS: Record<string, string> = {
     login: "ログイン",
 };
 
-const AppBreadcrumbs = () => {
-    const pathname = usePathname();
-    const segments = pathname.split("/").filter(Boolean);
+type Crumb = { href: string; label: string };
 
-    const crumbs = segments
-        .filter((segment) => segment in SEGMENT_LABELS)
-        .map((segment) => {
-            const originalIndex = segments.indexOf(segment);
-            const href = "/" + segments.slice(0, originalIndex + 1).join("/");
-            return { href, label: SEGMENT_LABELS[segment] };
-        });
+type Props = {
+    crumbs?: Crumb[];
+};
+
+const AppBreadcrumbs = ({ crumbs: crumbsProp }: Props) => {
+    const pathname = usePathname();
+
+    const crumbs: Crumb[] = crumbsProp ?? (() => {
+        const segments = pathname.split("/").filter(Boolean);
+        return segments
+            .filter((segment) => segment in SEGMENT_LABELS)
+            .map((segment) => {
+                const originalIndex = segments.indexOf(segment);
+                const href = "/" + segments.slice(0, originalIndex + 1).join("/");
+                return { href, label: SEGMENT_LABELS[segment] };
+            });
+    })();
 
     return (
         <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>

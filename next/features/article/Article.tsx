@@ -6,6 +6,7 @@ import { ArticleProps } from "./types";
 import MainImage from "./components/MainImage";
 import RecommendedArticles from "./components/RecommendedArticles";
 import AccessLogTracker from "./components/AccessLogTracker";
+import AppBreadcrumbs from "@/util/components/AppBreadcrumbs";
 import { Stack } from "@mui/material";
 import { notFound } from "next/navigation";
 import { HTTP_STATUS, SITE_AUTHOR } from "@/util/const";
@@ -43,9 +44,15 @@ const Article = async ({ articleId }: { articleId: string }) => {
         },
     };
 
+    const crumbs = [
+        { href: "/", label: "記事一覧" },
+        { href: `/article/${articleId}`, label: article.title },
+    ];
+
     return (
         <>
             <JsonLd data={jsonLd} />
+            <AppBreadcrumbs crumbs={crumbs} />
             <Stack spacing={2.5}>
                 <AccessLogTracker articleId={articleId} />
                 <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
