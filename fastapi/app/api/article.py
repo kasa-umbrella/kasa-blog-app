@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from util.constant import HTTP_NOT_FOUND
 from sqlalchemy.orm import Session
@@ -18,6 +19,7 @@ def get_articles(
     if user_id is None:
         params.limited = False
         params.published = True
+        params.exclude_future_published = True
     service = ArticleService(db)
     return service.get_articles(params)
 
@@ -32,7 +34,8 @@ def get_article_by_id(
     article_data = service.get_article_by_id(article_id)
     if article_data is None:
         raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
-    if user_id is None and (article_data.limited or not article_data.published):
+    is_future = article_data.published_at is not None and article_data.published_at > datetime.now()
+    if user_id is None and (article_data.limited or not article_data.published or is_future):
         raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
     return article_data
 

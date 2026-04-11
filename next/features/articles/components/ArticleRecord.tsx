@@ -49,7 +49,7 @@ const ArticleRecord = ({ article }: { article: ArticleRecordProps }) => {
                 >
                     <Stack spacing={0.5}>
                         <ArticleTitle title={article.title} />
-                        <ArticleDate date={article.createdAt} />
+                        <ArticleDate date={article.publishedAt} />
                         <ArticleSummery summary={article.summary} />
                     </Stack>
                 </CardContent>

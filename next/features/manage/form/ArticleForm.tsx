@@ -8,6 +8,7 @@ import MainTextInput from "./components/MainTextInput";
 import SummaryInput from "./components/SummaryInput";
 import LimitedSelect from "./components/LimitedSelect";
 import PublishSelect from "./components/PublishSelect";
+import PublishedAtInput from "./components/PublishedAtInput";
 import ImageUploadInput from "./components/ImageUploadInput";
 import RecentImageList from "./components/RecentImageList";
 import MainImagePreview from "./components/MainImagePreview";
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { ArticleFormProps, MainTextInputHandle } from "./types";
 import { postArticle, editArticle } from "../post/postService";
 import { uploadImage } from "./imageUploadService";
+import { toDatetimeLocal, nowDatetimeLocal } from "@/util/functions/format";
 
 const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: ArticleFormProps }) => {
     const isEditMode = !!articleProps;
@@ -27,6 +29,7 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
         published: articleProps?.published ?? false,
         content: articleProps?.content ?? "",
         mainImageUrl: articleProps?.mainImageUrl ?? null,
+        publishedAt: articleProps?.publishedAt ? toDatetimeLocal(articleProps.publishedAt) : nowDatetimeLocal(),
     });
     const { setErrorMessage, setSuccessMessage } = useSnackbar();
     const router = useRouter();
@@ -106,6 +109,10 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
                 {title}
             </AppHeadTitle>
             <Stack spacing={2}>
+                <PublishedAtInput
+                    value={article.publishedAt}
+                    onChange={(e) => setArticle((prev) => ({ ...prev, publishedAt: e.target.value }))}
+                />
                 <TitleInput
                     value={article.title}
                     onChange={(e) => setArticle((prev) => ({ ...prev, title: e.target.value }))}

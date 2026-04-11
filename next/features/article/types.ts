@@ -3,6 +3,6 @@ export interface ArticleProps {
     title: string | "";
     summary: string | "";
     mainImageUrl: string | "";
-    createdAt: string | "";
+    publishedAt: string | "";
     content: string | "";
 }

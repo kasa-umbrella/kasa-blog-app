@@ -1,4 +1,18 @@
 /**
+ * ISO 8601文字列をdatetime-local input用の"YYYY-MM-DDTHH:mm"形式に変換する
+ */
+export function toDatetimeLocal(iso: string): string {
+    return iso.slice(0, 16);
+}
+
+/**
+ * 現在時刻をdatetime-local input用の"YYYY-MM-DDTHH:mm"形式で返す
+ */
+export function nowDatetimeLocal(): string {
+    return toDatetimeLocal(new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString());
+}
+
+/**
  * 日付を"YYYY-MM-DD"形式にフォーマットする関数
  * @param date - フォーマットする日付（文字列またはDateオブジェクト）
  * @returns フォーマットされた日付文字列、またはエラーメッセージ

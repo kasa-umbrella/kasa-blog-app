@@ -6,6 +6,7 @@ import { ArticleProps } from "./types";
 import MainImage from "./components/MainImage";
 import RecommendedArticles from "./components/RecommendedArticles";
 import AccessLogTracker from "./components/AccessLogTracker";
+import AppBreadcrumbs from "@/util/components/AppBreadcrumbs";
 import { Stack } from "@mui/material";
 import { notFound } from "next/navigation";
 import { HTTP_STATUS, SITE_AUTHOR } from "@/util/const";
@@ -30,7 +31,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: article.title,
-        datePublished: article.createdAt,
+        datePublished: article.publishedAt,
         image: article.mainImageUrl || undefined,
         url: `${BASE_URL}/article/${articleId}`,
         author: {
@@ -43,15 +44,21 @@ const Article = async ({ articleId }: { articleId: string }) => {
         },
     };
 
+    const crumbs = [
+        { href: "/", label: "記事一覧" },
+        { href: `/article/${articleId}`, label: article.title },
+    ];
+
     return (
         <>
             <JsonLd data={jsonLd} />
+            <AppBreadcrumbs crumbs={crumbs} />
             <Stack spacing={2.5}>
                 <AccessLogTracker articleId={articleId} />
                 <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
                 <Stack spacing={0.5}>
                     <ArticleTitle title={article.title} />
-                    <ArticleDate date={article.createdAt} />
+                    <ArticleDate date={article.publishedAt} />
                 </Stack>
                 <ArticleBody body={article.content} />
                 <RecommendedArticles />

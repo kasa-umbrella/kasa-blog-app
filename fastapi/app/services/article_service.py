@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import or_
 from models.article import Article
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
@@ -23,9 +24,14 @@ class ArticleService:
                     Article.content.ilike(like),
                 )
             )
+        if params.exclude_future_published:
+            now = datetime.now()
+            query = query.filter(
+                or_(Article.published_at == None, Article.published_at <= now)
+            )
         total = query.count()
         articles_orm = (
-            query.order_by(Article.created_at.desc())
+            query.order_by(Article.published_at.desc())
             .offset((params.page - 1) * params.limit)
             .limit(params.limit)
             .all()
@@ -59,6 +65,7 @@ class ArticleService:
             limited=article_input.limited,
             published=article_input.published,
         )
+        article.published_at = article_input.published_at
         self.db_session.add(article)
         self.db_session.commit()
         self.db_session.refresh(article)
@@ -77,6 +84,7 @@ class ArticleService:
         article.content = article_input.content
         article.limited = article_input.limited
         article.published = article_input.published
+        article.published_at = article_input.published_at
         self.db_session.commit()
         self.db_session.refresh(article)
         return article

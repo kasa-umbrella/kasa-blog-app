@@ -10,6 +10,7 @@ class ArticleSearchParams(BaseModel):
     keyword: str | None = None
     page: int = 1
     limit: int = ARTICLES_PER_PAGE
+    exclude_future_published: bool = False
 
 
 class ArticleInput(BaseModel):
@@ -21,6 +22,7 @@ class ArticleInput(BaseModel):
     content: str = Field(..., min_length=1)
     limited: bool = False
     published: bool = False
+    published_at: datetime | None = Field(None, alias="publishedAt")
 
 
 class ArticleDetail(BaseModel):
@@ -50,6 +52,7 @@ class ArticleResponse(BaseModel):
     limited: bool
     published: bool
     created_at: datetime = Field(..., alias="createdAt")
+    published_at: datetime | None = Field(None, alias="publishedAt")
     updated_at: datetime = Field(..., alias="updatedAt")
     pv_count: int = Field(0, alias="pvCount")
 
