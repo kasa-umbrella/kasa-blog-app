@@ -34,6 +34,7 @@ logs/
 .coverage
 .coverage.*
 htmlcov/
+test_temp.db
 
 # Type checking / analysis caches
 .mypy_cache/
