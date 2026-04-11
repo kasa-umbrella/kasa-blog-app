@@ -12,6 +12,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from database import Base, get_database
 from dependencies import optional_auth, require_auth
@@ -21,7 +22,12 @@ import models.access_log  # noqa: F401
 
 SQLITE_URL = "sqlite://"
 
-engine = create_engine(SQLITE_URL, connect_args={"check_same_thread": False})
+# StaticPool: 全接続で同じインメモリDBを共有する
+engine = create_engine(
+    SQLITE_URL,
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
