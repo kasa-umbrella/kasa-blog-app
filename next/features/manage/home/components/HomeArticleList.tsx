@@ -13,8 +13,8 @@ import { fetchArticles } from "../homeService";
 
 const columns: AppTableColumn<ArticleRecordProps>[] = [
     {
-        label: "作成日",
-        render: (row) => formatDate(row.createdAt),
+        label: "公開日",
+        render: (row) => formatDate(row.publishedAt),
     },
     {
         label: "タイトル",
