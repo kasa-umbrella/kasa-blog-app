@@ -56,8 +56,7 @@ def client(db):
     """未認証クライアント"""
     app.dependency_overrides[get_database] = lambda: db
     app.dependency_overrides[optional_auth] = lambda: None
-    with TestClient(app) as c:
-        yield c
+    yield TestClient(app)
     app.dependency_overrides.clear()
 
 
@@ -67,6 +66,5 @@ def auth_client(db):
     app.dependency_overrides[get_database] = lambda: db
     app.dependency_overrides[optional_auth] = lambda: "test-user-id"
     app.dependency_overrides[require_auth] = lambda: "test-user-id"
-    with TestClient(app) as c:
-        yield c
+    yield TestClient(app)
     app.dependency_overrides.clear()
