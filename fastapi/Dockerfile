@@ -12,7 +12,8 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     default-mysql-client \
-    curl && \
+    curl \
+    tzdata && \
     rm -rf /var/lib/apt/lists/*
 
 # 依存関係ファイルを先にコピー（レイヤーキャッシュの活用）
