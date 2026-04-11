@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import or_
 from models.article import Article
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
@@ -22,6 +23,11 @@ class ArticleService:
                     Article.summary.ilike(like),
                     Article.content.ilike(like),
                 )
+            )
+        if params.exclude_future_published:
+            now = datetime.now()
+            query = query.filter(
+                or_(Article.published_at == None, Article.published_at <= now)
             )
         total = query.count()
         articles_orm = (

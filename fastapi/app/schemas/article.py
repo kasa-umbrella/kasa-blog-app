@@ -10,6 +10,7 @@ class ArticleSearchParams(BaseModel):
     keyword: str | None = None
     page: int = 1
     limit: int = ARTICLES_PER_PAGE
+    exclude_future_published: bool = False
 
 
 class ArticleInput(BaseModel):
