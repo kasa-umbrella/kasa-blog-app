@@ -43,6 +43,15 @@ def clean_data():
             conn.execute(table.delete())
 
 
+def override_get_database():
+    """テスト用DBセッションを都度生成するオーバーライド"""
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+
+
 @pytest.fixture
 def db():
     """テストデータ挿入用のDBセッション"""
@@ -52,18 +61,18 @@ def db():
 
 
 @pytest.fixture
-def client(db):
+def client():
     """未認証クライアント"""
-    app.dependency_overrides[get_database] = lambda: db
+    app.dependency_overrides[get_database] = override_get_database
     app.dependency_overrides[optional_auth] = lambda: None
     yield TestClient(app)
     app.dependency_overrides.clear()
 
 
 @pytest.fixture
-def auth_client(db):
+def auth_client():
     """認証済みクライアント"""
-    app.dependency_overrides[get_database] = lambda: db
+    app.dependency_overrides[get_database] = override_get_database
     app.dependency_overrides[optional_auth] = lambda: "test-user-id"
     app.dependency_overrides[require_auth] = lambda: "test-user-id"
     yield TestClient(app)
