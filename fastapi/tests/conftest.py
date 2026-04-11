@@ -2,14 +2,15 @@
 
 # database.py がインポート時にエンジンを生成するため、先に環境変数をセット
 import os
-os.environ.setdefault("DATABASE_URL", "sqlite://")
+os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
 os.environ.setdefault("CORS_ORIGINS", "http://localhost:3000")
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from database import Base, get_database
 from dependencies import optional_auth, require_auth
@@ -17,10 +18,11 @@ from main import app
 import models.article  # noqa: F401 - テーブル登録のためインポート
 import models.access_log  # noqa: F401
 
-TEST_DB_PATH = "./test_temp.db"
-SQLITE_URL = f"sqlite:///{TEST_DB_PATH}"
-
-engine = create_engine(SQLITE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -30,8 +32,6 @@ def setup_tables():
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
-    if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
 
 
 @pytest.fixture(autouse=True)
