@@ -21,6 +21,7 @@ class ArticleInput(BaseModel):
     content: str = Field(..., min_length=1)
     limited: bool = False
     published: bool = False
+    created_at: datetime | None = Field(None, alias="createdAt")
 
 
 class ArticleDetail(BaseModel):

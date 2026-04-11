@@ -10,4 +10,5 @@ export interface ArticleFormProps {
     published: boolean;
     content: string;
     mainImageUrl: string | null;
+    createdAt: string;
 }

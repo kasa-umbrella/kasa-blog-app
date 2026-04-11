@@ -59,6 +59,8 @@ class ArticleService:
             limited=article_input.limited,
             published=article_input.published,
         )
+        if article_input.created_at is not None:
+            article.created_at = article_input.created_at
         self.db_session.add(article)
         self.db_session.commit()
         self.db_session.refresh(article)
@@ -77,6 +79,8 @@ class ArticleService:
         article.content = article_input.content
         article.limited = article_input.limited
         article.published = article_input.published
+        if article_input.created_at is not None:
+            article.created_at = article_input.created_at
         self.db_session.commit()
         self.db_session.refresh(article)
         return article
