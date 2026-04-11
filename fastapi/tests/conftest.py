@@ -25,13 +25,8 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
-@pytest.fixture(scope="session", autouse=True)
-def setup_tables():
-    """セッション全体で一度だけテーブルを作成し、終了後に削除する"""
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
+# フィクスチャの順序に依存しないよう、モジュールロード時にテーブルを作成する
+Base.metadata.create_all(bind=engine)
 
 
 @pytest.fixture(autouse=True)
@@ -43,15 +38,6 @@ def clean_data():
             conn.execute(table.delete())
 
 
-def override_get_database():
-    """テスト用DBセッションを都度生成するオーバーライド"""
-    session = TestingSessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-
 @pytest.fixture
 def db():
     """テストデータ挿入用のDBセッション"""
@@ -61,18 +47,24 @@ def db():
 
 
 @pytest.fixture
-def client():
+def client(db):
     """未認証クライアント"""
-    app.dependency_overrides[get_database] = override_get_database
+    def _get_db():
+        yield db
+
+    app.dependency_overrides[get_database] = _get_db
     app.dependency_overrides[optional_auth] = lambda: None
     yield TestClient(app)
     app.dependency_overrides.clear()
 
 
 @pytest.fixture
-def auth_client():
+def auth_client(db):
     """認証済みクライアント"""
-    app.dependency_overrides[get_database] = override_get_database
+    def _get_db():
+        yield db
+
+    app.dependency_overrides[get_database] = _get_db
     app.dependency_overrides[optional_auth] = lambda: "test-user-id"
     app.dependency_overrides[require_auth] = lambda: "test-user-id"
     yield TestClient(app)
