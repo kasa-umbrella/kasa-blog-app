@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from conftest import make_article
+from helpers import make_article
 
 
 class TestGetArticles:
