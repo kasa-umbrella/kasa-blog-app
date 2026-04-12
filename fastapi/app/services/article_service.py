@@ -88,3 +88,11 @@ class ArticleService:
         self.db_session.commit()
         self.db_session.refresh(article)
         return article
+
+    def delete_article(self, article_id: str) -> bool:
+        article = self.db_session.query(Article).filter(Article.id == article_id).first()
+        if article is None:
+            return False
+        self.db_session.delete(article)
+        self.db_session.commit()
+        return True

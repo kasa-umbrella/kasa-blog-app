@@ -65,7 +65,13 @@ def update_article(
     return article_data
 
 
-@router.delete("/articles/{article_id}")
-def delete_article(article_id: str, _: str = Depends(require_auth)):
-    print(article_id)
-    return {"message": "ok"}
+@router.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_article(
+    article_id: str,
+    _: str = Depends(require_auth),
+    db: Session = Depends(get_database),
+):
+    service = ArticleService(db)
+    deleted = service.delete_article(article_id)
+    if not deleted:
+        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
