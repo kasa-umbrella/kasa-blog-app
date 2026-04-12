@@ -6,8 +6,27 @@ on:
       - main
 
 jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Backup DB
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            mkdir -p ~/backups
+            docker exec kasa-blog-mysql sh -c \
+              'mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
+              > ~/backups/dump_$(date +%Y%m%d_%H%M%S).sql
+            # 直近10件を残して古いバックアップを削除
+            ls -t ~/backups/dump_*.sql 2>/dev/null | tail -n +11 | xargs -r rm
+
   deploy:
     runs-on: ubuntu-latest
+    needs: backup
 
     steps:
       - name: Checkout
