@@ -4,7 +4,7 @@ import AppHeadTitle from "@/util/components/AppHeadTitle";
 import { useSnackbar } from "@/util/context/AppSnackbarContext";
 import { Box, Button, ButtonProps, Stack } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { logout } from "../homeService";
+import { downloadDump, logout } from "../homeService";
 
 const LinkButton = (props: ButtonProps) => (
     <Button variant="contained" {...props} sx={{ width: 120, ...props.sx }} />
@@ -23,6 +23,14 @@ const HomeLinks = () => {
         }
     };
 
+    const handleDump = async () => {
+        try {
+            await downloadDump();
+        } catch {
+            setErrorMessage("ダンプの取得に失敗しました。");
+        }
+    };
+
     return (
         <Box>
             <AppHeadTitle>メニュー</AppHeadTitle>
@@ -32,6 +40,9 @@ const HomeLinks = () => {
                 </LinkButton>
                 <LinkButton onClick={() => router.push("/manage/analysis")}>
                     データ分析
+                </LinkButton>
+                <LinkButton onClick={handleDump}>
+                    DBダンプ
                 </LinkButton>
                 <LinkButton onClick={handleLogout}>
                     ログアウト

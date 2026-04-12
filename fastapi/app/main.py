@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from api import access_log, article, auth, image, root
+from api import access_log, article, auth, dump, image, root
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
@@ -45,3 +45,4 @@ app.include_router(article.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 app.include_router(image.router, prefix="/api")
 app.include_router(access_log.router, prefix="/api")
+app.include_router(dump.router, prefix="/api")
