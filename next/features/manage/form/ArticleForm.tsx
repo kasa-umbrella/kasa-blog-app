@@ -18,6 +18,7 @@ import { ArticleFormProps, MainTextInputHandle } from "./types";
 import { postArticle, editArticle } from "../post/postService";
 import { uploadImage } from "./imageUploadService";
 import { toDatetimeLocal, nowDatetimeLocal } from "@/util/functions/format";
+import { ARTICLE_TITLE_MAX_LENGTH, ARTICLE_SUMMARY_MAX_LENGTH } from "@/util/const";
 
 const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: ArticleFormProps }) => {
     const isEditMode = !!articleProps;
@@ -55,9 +56,9 @@ const ArticleForm = ({ title, articleProps }: { title: string, articleProps?: Ar
     const validate = (): string[] => {
         const errors: string[] = [];
         if (!article.title) errors.push("タイトルは必須です");
-        else if (article.title.length > 15) errors.push("タイトルは15字以内で入力してください");
+        else if (article.title.length > ARTICLE_TITLE_MAX_LENGTH) errors.push(`タイトルは${ARTICLE_TITLE_MAX_LENGTH}字以内で入力してください`);
         if (!article.summary) errors.push("概要は必須です");
-        else if (article.summary.length > 100) errors.push("概要は100字以内で入力してください");
+        else if (article.summary.length > ARTICLE_SUMMARY_MAX_LENGTH) errors.push(`概要は${ARTICLE_SUMMARY_MAX_LENGTH}字以内で入力してください`);
         if (!article.mainImageUrl) errors.push("メイン画像は必須です");
         if (!article.content) errors.push("本文は必須です");
         return errors;
