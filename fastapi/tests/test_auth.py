@@ -27,7 +27,10 @@ class TestLogin:
 
     def test_ログイン成功後にauthエンドポイントが通る(self, client, db):
         make_user(db, login_id="admin", password="pass")
-        client.post("/api/login", json={"loginId": "admin", "password": "pass"})
+        login_res = client.post("/api/login", json={"loginId": "admin", "password": "pass"})
+        # TestClientはHTTP経由のためSecureクッキーを自動送信しない場合があるので明示的にセット
+        token = login_res.cookies.get("access_token")
+        client.cookies.set("access_token", token)
 
         res = client.get("/api/auth")
 
