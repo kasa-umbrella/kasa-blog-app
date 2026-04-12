@@ -17,6 +17,7 @@ class ArticleSearchParams(BaseModel):
     page: int = Field(1, ge=1)
     limit: int = Field(ARTICLES_PER_PAGE, ge=1, le=ARTICLES_MAX_LIMIT)
     exclude_future_published: bool = False
+    sort_by: str = Field("published_at", pattern="^(published_at|pv_count)$")
 
 
 class ArticleInput(BaseModel):

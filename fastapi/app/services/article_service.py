@@ -1,6 +1,8 @@
 from datetime import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, func
+from sqlalchemy.orm import Session
 from models.article import Article
+from models.access_log import AccessLog
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
 from services.access_log_service import AccessLogService
 
@@ -30,12 +32,29 @@ class ArticleService:
                 or_(Article.published_at == None, Article.published_at <= now)
             )
         total = query.count()
-        articles_orm = (
-            query.order_by(Article.published_at.desc())
-            .offset((params.page - 1) * params.limit)
-            .limit(params.limit)
-            .all()
-        )
+        if params.sort_by == "pv_count":
+            pv_subquery = (
+                self.db_session.query(
+                    AccessLog.article_id,
+                    func.count(AccessLog.id).label("pv_count"),
+                )
+                .group_by(AccessLog.article_id)
+                .subquery()
+            )
+            articles_orm = (
+                query.outerjoin(pv_subquery, Article.id == pv_subquery.c.article_id)
+                .order_by(func.coalesce(pv_subquery.c.pv_count, 0).desc())
+                .offset((params.page - 1) * params.limit)
+                .limit(params.limit)
+                .all()
+            )
+        else:
+            articles_orm = (
+                query.order_by(Article.published_at.desc())
+                .offset((params.page - 1) * params.limit)
+                .limit(params.limit)
+                .all()
+            )
 
         article_ids = [a.id for a in articles_orm]
         pv_map = AccessLogService(self.db_session).get_pv_counts(article_ids)

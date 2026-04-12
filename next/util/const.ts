@@ -6,3 +6,5 @@ export const SITE_AUTHOR = "かさたた";
 
 export const ARTICLE_TITLE_MAX_LENGTH = 15;
 export const ARTICLE_SUMMARY_MAX_LENGTH = 100;
+
+export const RECOMMENDED_ARTICLES_LIMIT = 3;
