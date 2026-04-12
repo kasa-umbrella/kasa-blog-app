@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from helpers import make_article
+from helpers import make_article, make_access_log
 
 
 class TestGetArticles:
@@ -58,6 +58,36 @@ class TestGetArticles:
         data = res.json()
         assert data["articles"] == []
         assert data["total"] == 0
+
+    def test_sort_by_pv_count_PV数降順に並ぶ(self, client, db):
+        a1 = make_article(db, title="PV少ない記事")
+        a2 = make_article(db, title="PV多い記事")
+        make_access_log(db, article_id=a2.id)
+        make_access_log(db, article_id=a2.id)
+        make_access_log(db, article_id=a1.id)
+
+        res = client.get("/api/articles?sort_by=pv_count")
+
+        assert res.status_code == 200
+        titles = [a["title"] for a in res.json()["articles"]]
+        assert titles.index("PV多い記事") < titles.index("PV少ない記事")
+
+    def test_sort_by_pv_count_PVが0の記事も含まれる(self, client, db):
+        make_article(db, title="PVあり記事")
+        a2 = make_article(db, title="PVなし記事")
+        make_access_log(db, article_id=a2.id)
+
+        res = client.get("/api/articles?sort_by=pv_count")
+
+        assert res.status_code == 200
+        titles = [a["title"] for a in res.json()["articles"]]
+        assert "PVあり記事" in titles
+        assert "PVなし記事" in titles
+
+    def test_sort_by_不正な値は422(self, client):
+        res = client.get("/api/articles?sort_by=invalid")
+
+        assert res.status_code == 422
 
 
 class TestGetArticleById:

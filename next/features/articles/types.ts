@@ -14,6 +14,8 @@ export interface ArticleRecordProps {
 export interface ArticleSearchParams {
     keyword?: string;
     page?: number;
+    limit?: number;
+    sortBy?: "publishedAt" | "pvCount";
 };
 
 //記事一覧APIのレスポンス型定義
