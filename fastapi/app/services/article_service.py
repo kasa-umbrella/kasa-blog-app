@@ -52,9 +52,19 @@ class ArticleService:
             limit=params.limit,
         )
 
-    def get_article_by_id(self, article_id: str) -> Article | None:
-        query = self.db_session.query(Article).filter(Article.id == article_id)
-        return query.first()
+    def get_article_by_id(self, article_id: str, user_id: str | None = None) -> Article | None:
+        article = self.db_session.query(Article).filter(Article.id == article_id).first()
+        if article is None:
+            return None
+        if user_id is None:
+            now = datetime.now()
+            pub = article.published_at
+            if pub is not None and pub.tzinfo is not None:
+                pub = pub.astimezone().replace(tzinfo=None)
+            is_future = pub is not None and pub > now
+            if article.limited or not article.published or is_future:
+                return None
+        return article
 
     def create_article(self, article_input: ArticleInput) -> Article:
         article = Article(
@@ -88,3 +98,11 @@ class ArticleService:
         self.db_session.commit()
         self.db_session.refresh(article)
         return article
+
+    def delete_article(self, article_id: str) -> bool:
+        article = self.db_session.query(Article).filter(Article.id == article_id).first()
+        if article is None:
+            return False
+        self.db_session.delete(article)
+        self.db_session.commit()
+        return True

@@ -12,6 +12,8 @@ def upload_image(file: UploadFile = File(...), _: str = Depends(require_auth)):
         service = ImageService()
         image_url = service.upload_image(file)
         return {"imageUrl": image_url}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except (BotoCoreError, ClientError) as e:
         raise HTTPException(status_code=500, detail=str(e))
 

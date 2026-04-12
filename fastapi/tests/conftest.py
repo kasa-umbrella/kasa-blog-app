@@ -5,6 +5,7 @@ import os
 os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
 os.environ.setdefault("CORS_ORIGINS", "http://localhost:3000")
+os.environ["SECURE_COOKIES"] = "false"  # TestClientはHTTPなのでSecureクッキーを送り返さない
 
 import pytest
 from fastapi.testclient import TestClient
@@ -17,6 +18,7 @@ from dependencies import optional_auth, require_auth
 from main import app
 import models.article  # noqa: F401 - テーブル登録のためインポート
 import models.access_log  # noqa: F401
+import models.user  # noqa: F401
 
 engine = create_engine(
     "sqlite:///:memory:",

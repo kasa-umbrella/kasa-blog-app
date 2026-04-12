@@ -173,3 +173,32 @@ class TestUpdateArticle:
         res = auth_client.put("/api/articles/non-existent-id", json=self.UPDATE_BODY)
 
         assert res.status_code == 404
+
+
+class TestDeleteArticle:
+    def test_未認証は401(self, client, db):
+        article = make_article(db)
+
+        res = client.delete(f"/api/articles/{article.id}")
+
+        assert res.status_code == 401
+
+    def test_認証済で記事を削除できる(self, auth_client, db):
+        article = make_article(db)
+
+        res = auth_client.delete(f"/api/articles/{article.id}")
+
+        assert res.status_code == 204
+
+    def test_削除後は取得できない(self, auth_client, db):
+        article = make_article(db)
+        auth_client.delete(f"/api/articles/{article.id}")
+
+        res = auth_client.get(f"/api/articles/{article.id}")
+
+        assert res.status_code == 404
+
+    def test_存在しないIDは404(self, auth_client):
+        res = auth_client.delete("/api/articles/non-existent-id")
+
+        assert res.status_code == 404

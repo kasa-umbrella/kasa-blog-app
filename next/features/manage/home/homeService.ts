@@ -16,6 +16,23 @@ export async function fetchWeeklyAccess(): Promise<WeeklyAccessResponse> {
     return res.json();
 }
 
+export async function downloadDump(): Promise<void> {
+    const res = await fetch(`${baseUrl}/dump`, { credentials: "include" });
+    if (!res.ok) throw new Error(`ダンプの取得に失敗しました: ${res.status}`);
+
+    const blob = await res.blob();
+    const disposition = res.headers.get("Content-Disposition") ?? "";
+    const match = disposition.match(/filename=(.+)$/);
+    const filename = match ? match[1] : "dump.sql";
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 export const logout = async (): Promise<void> => {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const res = await fetch(`${baseUrl}/logout`, {

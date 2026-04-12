@@ -37,7 +37,7 @@ def record_access(
     if request.cookies.get(cookie_name):
         return
 
-    ip_address = request.headers.get("x-forwarded-for", request.client.host)
+    ip_address = request.headers.get("x-real-ip") or request.client.host
     AccessLogService(db).create_log(AccessLogInput(
         article_id=article_id,
         ip_address=ip_address,

@@ -1,4 +1,3 @@
-from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from util.constant import HTTP_NOT_FOUND
 from sqlalchemy.orm import Session
@@ -31,11 +30,8 @@ def get_article_by_id(
     user_id: str | None = Depends(optional_auth),
 ):
     service = ArticleService(db)
-    article_data = service.get_article_by_id(article_id)
+    article_data = service.get_article_by_id(article_id, user_id=user_id)
     if article_data is None:
-        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
-    is_future = article_data.published_at is not None and article_data.published_at > datetime.now()
-    if user_id is None and (article_data.limited or not article_data.published or is_future):
         raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
     return article_data
 
@@ -65,7 +61,13 @@ def update_article(
     return article_data
 
 
-@router.delete("/articles/{article_id}")
-def delete_article(article_id: str, _: str = Depends(require_auth)):
-    print(article_id)
-    return {"message": "ok"}
+@router.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_article(
+    article_id: str,
+    _: str = Depends(require_auth),
+    db: Session = Depends(get_database),
+):
+    service = ArticleService(db)
+    deleted = service.delete_article(article_id)
+    if not deleted:
+        raise HTTPException(status_code=HTTP_NOT_FOUND, detail="Article not found")
