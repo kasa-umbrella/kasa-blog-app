@@ -22,3 +22,34 @@ def make_article(db, **kwargs):
     db.commit()
     db.refresh(article)
     return article
+
+
+def make_user(db, login_id: str = "testuser", password: str = "password") -> "User":
+    """テスト用ユーザーを作成するヘルパー関数（パスワードはbcryptハッシュ化済み）"""
+    import bcrypt
+    from models.user import User
+
+    hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    user = User(id=login_id, password=hashed)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def make_access_log(db, article_id: str, **kwargs):
+    """テスト用アクセスログを作成するヘルパー関数"""
+    from models.access_log import AccessLog
+
+    defaults = {
+        "article_id": article_id,
+        "ip_address": "127.0.0.1",
+        "user_agent": "test-agent",
+        "referrer": None,
+    }
+    defaults.update(kwargs)
+    log = AccessLog(**defaults)
+    db.add(log)
+    db.commit()
+    db.refresh(log)
+    return log

@@ -17,6 +17,7 @@ from dependencies import optional_auth, require_auth
 from main import app
 import models.article  # noqa: F401 - テーブル登録のためインポート
 import models.access_log  # noqa: F401
+import models.user  # noqa: F401
 
 engine = create_engine(
     "sqlite:///:memory:",
