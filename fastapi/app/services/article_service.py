@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import or_
 from models.article import Article
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
@@ -25,7 +25,7 @@ class ArticleService:
                 )
             )
         if params.exclude_future_published:
-            now = datetime.now()
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
             query = query.filter(
                 or_(Article.published_at == None, Article.published_at <= now)
             )
@@ -52,9 +52,19 @@ class ArticleService:
             limit=params.limit,
         )
 
-    def get_article_by_id(self, article_id: str) -> Article | None:
-        query = self.db_session.query(Article).filter(Article.id == article_id)
-        return query.first()
+    def get_article_by_id(self, article_id: str, user_id: str | None = None) -> Article | None:
+        article = self.db_session.query(Article).filter(Article.id == article_id).first()
+        if article is None:
+            return None
+        if user_id is None:
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
+            pub = article.published_at
+            if pub is not None and pub.tzinfo is not None:
+                pub = pub.astimezone(timezone.utc).replace(tzinfo=None)
+            is_future = pub is not None and pub > now
+            if article.limited or not article.published or is_future:
+                return None
+        return article
 
     def create_article(self, article_input: ArticleInput) -> Article:
         article = Article(

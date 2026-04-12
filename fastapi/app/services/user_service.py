@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import bcrypt
 from fastapi import Response
-from jose import jwt
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from models.user import User
@@ -46,7 +46,7 @@ def verify_access_token(token: str) -> str | None:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         user_id: str | None = payload.get("sub")
         return user_id
-    except Exception:
+    except JWTError:
         return None
 
 
