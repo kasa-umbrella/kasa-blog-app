@@ -49,7 +49,9 @@ const CommentList = ({ articleId }: { articleId: string }) => {
                         ))}
                     </Stack>
                 ) : comments.length === 0 ? (
-                    <AppEmptyMessage message="まだコメントはありません" />
+                    <Box sx={{ pb: 2 }}>
+                        <AppEmptyMessage message="まだコメントはありません" />
+                    </Box>
                 ) : (
                     <Stack spacing={1}>
                         {comments.map((c) => (

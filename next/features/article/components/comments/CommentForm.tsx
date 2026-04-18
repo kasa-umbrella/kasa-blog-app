@@ -63,7 +63,7 @@ const CommentForm = ({
                 />
                 {error && <Alert severity="error">{error}</Alert>}
                 <Button variant="contained" onClick={handleSubmit} disabled={isDisabled}>
-                    送信
+                    コメントを投稿
                 </Button>
             </Stack>
         </Box>
