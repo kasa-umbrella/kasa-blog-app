@@ -56,7 +56,7 @@ const Article = async ({ articleId }: { articleId: string }) => {
             <Stack spacing={2.5}>
                 <AccessLogTracker articleId={articleId} />
                 <MainImage imageUrl={article.mainImageUrl} alt={article.title} />
-                <Stack spacing={0.5}>
+                <Stack spacing={1}>
                     <ArticleTitle title={article.title} />
                     <ArticleDate date={article.publishedAt} />
                 </Stack>
