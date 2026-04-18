@@ -37,6 +37,24 @@ def make_user(db, login_id: str = "testuser", password: str = "password") -> "Us
     return user
 
 
+def make_comment(db, article_id: str, **kwargs):
+    """テスト用コメントを作成するヘルパー関数"""
+    from models.comment import ArticleComment
+
+    defaults = {
+        "article_id": article_id,
+        "commenter_name": "テストユーザー",
+        "content": "テストコメントです。",
+        "ip_address": "127.0.0.1",
+    }
+    defaults.update(kwargs)
+    comment = ArticleComment(**defaults)
+    db.add(comment)
+    db.commit()
+    db.refresh(comment)
+    return comment
+
+
 def make_access_log(db, article_id: str, **kwargs):
     """テスト用アクセスログを作成するヘルパー関数"""
     from models.access_log import AccessLog

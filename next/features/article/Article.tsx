@@ -5,9 +5,10 @@ import { fetchArticle } from "./articleService";
 import { ArticleProps } from "./types";
 import MainImage from "./components/MainImage";
 import RecommendedArticles from "./components/RecommendedArticles";
+import CommentList from "./components/comments/CommentList";
 import AccessLogTracker from "./components/AccessLogTracker";
 import AppBreadcrumbs from "@/util/components/AppBreadcrumbs";
-import { Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import { notFound } from "next/navigation";
 import { HTTP_STATUS, SITE_AUTHOR } from "@/util/const";
 import JsonLd from "@/util/components/JsonLd";
@@ -61,6 +62,9 @@ const Article = async ({ articleId }: { articleId: string }) => {
                     <ArticleDate date={article.publishedAt} />
                 </Stack>
                 <ArticleBody body={article.content} />
+                <Divider />
+                <CommentList articleId={articleId} />
+                <Divider />
                 <RecommendedArticles />
             </Stack>
         </>
