@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 const Paragraph = ({ children }: { children: ReactNode }) => {
     return (
-        <Typography sx={{ mb: 3 }}>
+        <Typography sx={{ mb: 3, lineHeight: 2 }}>
             {children}
         </Typography>
     );
