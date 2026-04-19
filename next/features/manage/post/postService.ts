@@ -1,21 +1,13 @@
 import { ArticleFormProps } from "../form/types";
+import { fetchCsrfToken } from "@/util/functions/csrf";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-/**
- * 投稿フォームのデータをサーバーへ送信して新しい記事を作成します。
- *
- * サーバーはエンドポイント `POST ${baseUrl}/articles` を期待します。
- * レスポンスが OK でない場合はエラーを投げます。
- *
- * @param {ArticleFormProps} article - 投稿する記事のデータ。
- * @returns {Promise<void>} 成功時は何も返しません。
- * @throws {Error} サーバーがエラー応答を返した場合にステータスコードを含むエラーを投げます。
- */
 export async function postArticle(article: ArticleFormProps): Promise<void> {
+    const csrfToken = await fetchCsrfToken();
     const res = await fetch(`${baseUrl}/articles`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": csrfToken },
         credentials: "include",
         body: JSON.stringify(article),
     });
@@ -24,20 +16,11 @@ export async function postArticle(article: ArticleFormProps): Promise<void> {
     }
 }
 
-/**
- * 既存の記事を更新するためにサーバーへデータを送信します。
- *
- * サーバーはエンドポイント `PUT ${baseUrl}/articles/{articleId}` を期待します。
- * レスポンスが OK でない場合はエラーを投げます。
- *
- * @param {ArticleFormProps} article - 更新する記事のデータ（`articleId` を含むこと）。
- * @returns {Promise<void>} 成功時は何も返しません。
- * @throws {Error} サーバーがエラー応答を返した場合にステータスコードを含むエラーを投げます。
- */
 export async function editArticle(article: ArticleFormProps): Promise<void> {
+    const csrfToken = await fetchCsrfToken();
     const res = await fetch(`${baseUrl}/articles/${article.articleId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": csrfToken },
         credentials: "include",
         body: JSON.stringify(article),
     });

@@ -2,6 +2,7 @@
 
 import { Card, CardActionArea, CardContent, Stack, Typography, Box } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArticleRecordProps } from "../types";
 import { formatDate } from "@/util/functions/format";
 
@@ -28,9 +29,10 @@ const ArticleSummery = ({ summary }: { summary: string }) => {
 };
 
 const ArticleRecord = ({ article }: { article: ArticleRecordProps }) => {
-    
+    const router = useRouter();
+
     const handleClick = () => {
-        window.open(`/article/${article.articleId}`, '_blank');
+        router.push(`/article/${article.articleId}`);
     };
 
     return (

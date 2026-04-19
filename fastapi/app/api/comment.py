@@ -1,11 +1,20 @@
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.orm import Session
 from database import get_database
-from dependencies import verify_csrf
-from schemas.comment import CommentInput, CommentListResponse, CommentResponse
+from dependencies import require_auth, verify_csrf
+from schemas.comment import AdminCommentListResponse, CommentInput, CommentListResponse, CommentResponse
 from services.comment_service import CommentService
 
 router = APIRouter()
+
+
+@router.get("/comments", response_model=AdminCommentListResponse)
+def get_all_comments(
+    page: int = 1,
+    db: Session = Depends(get_database),
+    _: str = Depends(require_auth),
+):
+    return CommentService(db).get_all_comments(page)
 
 
 @router.get("/articles/{article_id}/comments", response_model=CommentListResponse)

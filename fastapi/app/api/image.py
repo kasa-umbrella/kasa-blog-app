@@ -1,12 +1,12 @@
 from botocore.exceptions import BotoCoreError, ClientError
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from dependencies import require_auth
+from dependencies import require_auth, verify_csrf
 from services.image_service import ImageService
 
 router = APIRouter()
 
 
-@router.post("/image")
+@router.post("/image", dependencies=[Depends(verify_csrf)])
 def upload_image(file: UploadFile = File(...), _: str = Depends(require_auth)):
     try:
         service = ImageService()
