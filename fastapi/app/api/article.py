@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database import get_database
 from schemas.article import ArticleInput, ArticleResponse, ArticleSearchParams, ArticleListResponse
 from services.article_service import ArticleService
-from dependencies import require_auth, optional_auth
+from dependencies import require_auth, optional_auth, verify_csrf
 
 router = APIRouter()
 
@@ -36,7 +36,7 @@ def get_article_by_id(
     return article_data
 
 
-@router.post("/articles", response_model=ArticleResponse)
+@router.post("/articles", response_model=ArticleResponse, dependencies=[Depends(verify_csrf)])
 def create_article(
     body: ArticleInput,
     _: str = Depends(require_auth),
@@ -47,7 +47,7 @@ def create_article(
     return article_data
 
 
-@router.put("/articles/{article_id}", response_model=ArticleResponse)
+@router.put("/articles/{article_id}", response_model=ArticleResponse, dependencies=[Depends(verify_csrf)])
 def update_article(
     article_id: str,
     body: ArticleInput,
@@ -61,7 +61,7 @@ def update_article(
     return article_data
 
 
-@router.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/articles/{article_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(verify_csrf)])
 def delete_article(
     article_id: str,
     _: str = Depends(require_auth),

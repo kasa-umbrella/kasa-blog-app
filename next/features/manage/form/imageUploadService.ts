@@ -1,12 +1,16 @@
+import { fetchCsrfToken } from "@/util/functions/csrf";
+
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function uploadImage(file: File): Promise<string> {
+    const csrfToken = await fetchCsrfToken();
     const formData = new FormData();
     formData.append("file", file);
 
     const res = await fetch(`${baseUrl}/image`, {
         method: "POST",
         credentials: "include",
+        headers: { "x-csrf-token": csrfToken },
         body: formData,
     });
 

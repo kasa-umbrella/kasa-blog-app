@@ -31,3 +31,23 @@ class CommentListResponse(BaseModel):
     has_next: bool = Field(..., alias="hasNext")
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class AdminCommentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    id: str
+    article_id: str = Field(..., alias="articleId")
+    article_title: str = Field(..., alias="articleTitle")
+    commenter_name: str = Field(..., alias="commenterName")
+    content: str
+    created_at: datetime = Field(..., alias="createdAt")
+
+
+class AdminCommentListResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    comments: list[AdminCommentResponse]
+    total: int
+    page: int
+    has_next: bool = Field(..., alias="hasNext")

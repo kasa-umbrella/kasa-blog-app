@@ -14,12 +14,13 @@ import { fetchArticles } from "../homeService";
 const columns: AppTableColumn<ArticleRecordProps>[] = [
     {
         label: "公開日",
+        width: 110,
         render: (row) => formatDate(row.publishedAt),
     },
     {
         label: "タイトル",
         render: (row) => (
-            <Link href={`/article/${row.articleId}`} target="_blank">
+            <Link href={`/article/${row.articleId}`} target="_blank" rel="noopener noreferrer">
                 {row.title}
             </Link>
         ),
@@ -49,6 +50,7 @@ const columns: AppTableColumn<ArticleRecordProps>[] = [
                 component={Link}
                 href={`/manage/edit/${row.articleId}`}
                 target="_blank"
+                rel="noopener noreferrer"
             >
                 編集
             </Button>
