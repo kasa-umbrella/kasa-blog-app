@@ -40,6 +40,7 @@ class CommentService:
                 articleTitle=title,
                 commenterName=c.commenter_name,
                 content=c.content,
+                ipAddress=c.ip_address,
                 createdAt=c.created_at,
             )
             for c, title in rows

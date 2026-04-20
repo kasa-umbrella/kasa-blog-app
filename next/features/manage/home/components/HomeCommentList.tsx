@@ -17,12 +17,17 @@ const columns: AppTableColumn<AdminCommentRecord>[] = [
         render: (row) => formatDate(row.createdAt),
     },
     {
+        label: "IPアドレス",
+        width: 140,
+        render: (row) => row.ipAddress ?? "-",
+    },
+    {
         label: "記事名",
         render: (row) => row.articleTitle,
     },
     {
         label: "投稿者名",
-        width: 120,
+        width: 100,
         render: (row) => row.commenterName,
     },
     {
@@ -60,6 +65,7 @@ const HomeCommentList = () => {
                 columns={columns}
                 rows={comments}
                 rowKey={(row) => row.id}
+                minWidth={800}
             />
             <AppPagination page={page} count={totalPages} onChange={setPage} />
         </Box>

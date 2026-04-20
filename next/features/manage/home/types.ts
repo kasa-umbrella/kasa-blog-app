@@ -13,6 +13,7 @@ export interface AdminCommentRecord {
     articleTitle: string;
     commenterName: string;
     content: string;
+    ipAddress: string | null;
     createdAt: string;
 }
 
