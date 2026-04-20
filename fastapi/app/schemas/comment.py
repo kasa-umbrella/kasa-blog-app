@@ -41,6 +41,7 @@ class AdminCommentResponse(BaseModel):
     article_title: str = Field(..., alias="articleTitle")
     commenter_name: str = Field(..., alias="commenterName")
     content: str
+    ip_address: str | None = Field(None, alias="ipAddress")
     created_at: datetime = Field(..., alias="createdAt")
 
 
