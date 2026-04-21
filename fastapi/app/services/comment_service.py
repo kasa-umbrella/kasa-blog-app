@@ -41,6 +41,7 @@ class CommentService:
                 commenterName=c.commenter_name,
                 content=c.content,
                 ipAddress=c.ip_address,
+                isVisible=c.is_visible,
                 createdAt=c.created_at,
             )
             for c, title in rows
